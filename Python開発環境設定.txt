@@ -1,0 +1,29 @@
+Create Virtual Environment
+python -m venv .venv
+
+Only For CommandPrompt
+.venv\Scripts\activate.bat
+
+Only For PowerShell
+"Set-ExecutionPlicy RemoteSigned -Scope CurrentUser -Force"
+.venv\Scripts\Activate.ps1
+
+pip UPDATE
+python -m pip install --upgrade pip
+
+3rd Party library
+python -m pip install flake8
+python -m pip install mypy
+python -m pip install pydocstyle
+python -m pip install pyinstaller
+python -m pip install pywin32
+python -m pip install openpyxl
+python -m pip install Dash
+python -m pip install Plotly
+python -m pip install pandas
+python -m pip install GitPython
+python -m pip install pysvn
+python -m pip install mpi4py
+python -m pip install opencv-python
+python -m pip install PyQt6
+python -m pip install PySide6
