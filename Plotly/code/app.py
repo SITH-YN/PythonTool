@@ -1,16 +1,19 @@
 """Dash App."""
+# Run this app with `python sample.py` and
+# visit http://127.0.0.1:8050/ in your web browser.
 
 from dash import Dash, html, Input, Output, dash_table, dcc, callback
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
+import webbrowser
 
 # Get SMR Information From SMR List.xlsx
 
 # Get Data From CSV File
-df_smr_info = pd.read_csv("SMR_info.csv")
-df_member_info_total = pd.read_csv("MEMBER_Info_Total.csv")
-df_member_info_weekly = pd.read_csv("MEMBER_Info_Weekly.csv")
+df_smr_info = pd.read_csv("../data/SMR_info.csv")
+df_member_info_total = pd.read_csv("../data/MEMBER_Info_Total.csv")
+df_member_info_weekly = pd.read_csv("../data/MEMBER_Info_Weekly.csv")
 
 app = Dash(__name__)
 
@@ -83,3 +86,4 @@ def update_graphs(active_cell):
 
 if __name__ == '__main__':
     app.run_server(debug=True, use_reloader=True)
+    webbrowser.open_new_tab("http://127.0.0.1:8050/")
