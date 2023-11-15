@@ -814,39 +814,235 @@ from plotly.subplots import make_subplots
 
 
 """3.1.8 テーブル（Table trace）"""
-table_values = [[1, 2, 3], [3, 5, 2]]
-table_labels = ["A", "B"]
-table_fig = make_subplots(
-    rows=2,
-    cols=2,
-    specs=[[{"type": "domain"}, {"type": "domain"}], [{"colspan": 2}, None]],
-)
-table_fig.add_trace(
-    go.Table(header={"values": table_labels}, cells={"values": table_values}),
+# table_values = [[1, 2, 3], [3, 5, 2]]
+# table_labels = ["A", "B"]
+# table_fig = make_subplots(
+#     rows=2,
+#     cols=2,
+#     specs=[[{"type": "domain"}, {"type": "domain"}], [{"colspan": 2}, None]],
+# )
+# table_fig.add_trace(
+#     go.Table(header={"values": table_labels}, cells={"values": table_values}),
+#     row=1,
+#     col=1,
+# )
+# table_fig.add_trace(
+#     go.Table(
+#         cells={
+#             "values": pd.DataFrame(table_values),
+#             "line": {"width": 2, "color": "black"},  # 罫線のスタイル
+#             "fill": {"color": "white"},  # 塗りつぶし色
+#             "align": "right",  # 配置
+#         },
+#         header={
+#             "values": table_labels,
+#             "height": 18,  # セルの高さ
+#             "line": {"width": 2, "color": "black"},
+#             "fill": {"color": "white"},
+#             "font": {"size": 10},  # フォントサイズ
+#         },
+#     ),
+#     row=1,
+#     col=2,
+# )
+# table_fig.add_trace(
+#     go.Scatter(x=table_values[0], y=table_values[1]), row=2, col=1
+# )
+# table_fig.show()
+# pd.DataFrame(table_values)
+
+
+"""3.2 専門的なグラフ"""
+"""3.2.1 箱ひげ図（Box trace）"""
+# tips = plotly.data.tips()
+# tips.head()
+
+# # ❶ 曜日ごとのデータを抽出
+# tips_by_day = tips.groupby("day")  # day列でグループ化
+# days = ["Thur", "Fri", "Sat", "Sun"]
+# # グループ化された各DataFrameを抽出
+# thur, fri, sat, sun = [tips_by_day.get_group(day) for day in days]
+
+# box_fig = go.Figure()
+# box_fig.add_trace(go.Box(y=thur["tip"], name="Thur"))
+# box_fig.add_trace(go.Box(y=fri["tip"], name="Fri"))
+# box_fig.add_trace(go.Box(y=sat["tip"], name="Sat"))
+# box_fig.add_trace(go.Box(y=sun["tip"], name="Sun"))
+# box_fig.show()
+
+
+"""3.2.2 バイオリン図（Violin trace）"""
+# tips = plotly.data.tips()
+# tips.head()
+
+# # ❶ 曜日ごとのデータを抽出
+# tips_by_day = tips.groupby("day")  # day列でグループ化
+# days = ["Thur", "Fri", "Sat", "Sun"]
+# # グループ化された各DataFrameを抽出
+# thur, fri, sat, sun = [tips_by_day.get_group(day) for day in days]
+
+# violin_fig = make_subplots(rows=1, cols=2)
+# # ❶ 1列目のサブプロット
+# violin_fig.add_trace(
+#     go.Violin(
+#         y=thur["tip"],
+#         name="Thur",
+#         box_visible=True,  # ❸ 箱ひげ図を重ねて描画
+#     ),
+#     row=1,
+#     col=1,
+# )
+# violin_fig.add_trace(
+#     go.Violin(y=fri["tip"], name="Fri", box_visible=True), row=1, col=1
+# )
+# violin_fig.add_trace(
+#     go.Violin(y=sat["tip"], name="Sat", box_visible=True), row=1, col=1
+# )
+# violin_fig.add_trace(
+#     go.Violin(y=sun["tip"], name="Sun", box_visible=True), row=1, col=1
+# )
+
+# # ❷ 2列目のサブプロット
+# for data in thur, fri, sat, sun:
+#     smoker = data.loc[data["smoker"] == "Yes"]  # smoker列がYesのデータ
+#     non_smoker = data.loc[data["smoker"] == "No"]  # smoker列がNoのデータ
+#     day = data["day"].iloc[0]  # day列の先頭のデータ(ラベルに使用)
+#     violin_fig.add_trace(
+#         go.Violin(
+#             x=smoker["day"],
+#             y=smoker["tip"],
+#             side="negative",  # ❹ 左側に描画
+#             name=f"{day}: somoker",
+#         ),
+#         row=1,
+#         col=2,
+#     )
+#     violin_fig.add_trace(
+#         go.Violin(
+#             x=non_smoker["day"],
+#             y=non_smoker["tip"],
+#             side="positive",  # ❺ 右側に描画
+#             name=f"{day}: non-somoker",
+#         ),
+#         row=1,
+#         col=2,
+#     )
+# violin_fig.show()
+
+
+"""3.2.3 ヒストグラム（Histogram trace）"""
+# np.random.seed(1)
+# data0 = np.random.normal(10, 1, 10000)
+# data1 = np.random.normal(12, 1.5, 10000)
+# histogram_fig = make_subplots(rows=1, cols=2)
+# histogram_fig.add_trace(go.Histogram(x=data0, name="data0"), row=1, col=1)
+# histogram_fig.add_trace(go.Histogram(x=data1, name="data1"), row=1, col=1)
+# histogram_fig.add_trace(go.Histogram(y=data0, name="data0"), row=1, col=2)
+# histogram_fig.add_trace(
+#     go.Histogram(
+#         y=data1,  # ❶ 引数yで横向き
+#         name="data1",
+#         nbinsy=50,  # ❷ ビンの数を変更
+#     ),
+#     row=1,
+#     col=2,
+# )
+# histogram_fig.show()
+
+# go.Figure(
+#     [go.Histogram(x=data0, name="data0"), go.Histogram(x=data1, name="data1")],
+#     layout=go.Layout(barmode="stack"),  # ❶ ヒストグラムを積み上げ
+# ).show()
+
+# probability_comulative_histogram_fig = make_subplots(rows=1, cols=2)
+# probability_comulative_histogram_fig.add_trace(
+#     go.Histogram(
+#         x=data0,
+#         # ❶ サンプル数の合計を1とした正規化
+#         histnorm="probability",
+#         name="probability",
+#     ),
+#     row=1,
+#     col=1,
+# )
+# probability_comulative_histogram_fig.add_trace(
+#     go.Histogram(
+#         x=data0,
+#         # ❷ 累積ヒストグラム
+#         cumulative={"enabled": True},
+#         name="comulative",
+#     ),
+#     row=1,
+#     col=2,
+# )
+# probability_comulative_histogram_fig.show()
+
+# go.Figure(
+#     go.Histogram(
+#         x=data0,
+#         # ❷ ヒストグラムの範囲を指定
+#         xbins={"start": 8, "end": 11, "size": 0.01},
+#     )
+# ).show()
+
+
+"""3.2.4 2 次元ヒストグラム（Histogram2d trace）"""
+# np.random.seed(1)
+# data0 = np.random.normal(10, 1, 10000)
+# data1 = np.random.normal(12, 1.5, 10000)
+
+# histogram2d_fig = make_subplots(rows=1, cols=2)
+# # ❶ 2次元ヒストグラム
+# histogram2d_fig.add_trace(go.Histogram2d(x=data0, y=data1), row=1, col=1)
+# # ❷ 等高線
+# histogram2d_fig.add_trace(
+#     go.Histogram2dContour(x=data0, y=data1, showscale=False), row=1, col=2
+# )
+# histogram2d_fig.update_layout(coloraxis_showscale=False)
+# histogram2d_fig.show()
+
+"""3.2.5 エラーバー"""
+np.random.seed(1)
+x = np.arange(1, 4)
+y = np.random.rand(3)
+err_value = np.random.rand(3) * 0.1
+err_value_minus = np.random.rand(3) * 0.1
+error_fig = make_subplots(rows=2, cols=2)
+# ❶ エラーバーを一定の値で指定
+error_fig.add_trace(
+    go.Scatter(
+        x=x,
+        y=y,
+        # エラーバーを定数で指定
+        error_y={"type": "constant", "value": 0.1},
+    ),
     row=1,
     col=1,
 )
-table_fig.add_trace(
-    go.Table(
-        cells={
-            "values": pd.DataFrame(table_values),
-            "line": {"width": 2, "color": "black"},  # 罫線のスタイル
-            "fill": {"color": "white"},  # 塗りつぶし色
-            "align": "right",  # 配置
-        },
-        header={
-            "values": table_labels,
-            "height": 18,  # セルの高さ
-            "line": {"width": 2, "color": "black"},
-            "fill": {"color": "white"},
-            "font": {"size": 10},  # フォントサイズ
-        },
+# ❷ 各要素ごとにエラーバーを指定
+error_fig.add_trace(
+    go.Scatter(
+        x=x,
+        y=y,
+        # 各要素のエラーバーを指定
+        error_x={"type": "data", "array": err_value},
     ),
     row=1,
     col=2,
 )
-table_fig.add_trace(
-    go.Scatter(x=table_values[0], y=table_values[1]), row=2, col=1
+# ❸ エラーバーを正の値と負の値をそれぞれ指定
+error_fig.add_trace(
+    go.Bar(
+        x=x,
+        y=y,
+        error_y={
+            "symmetric": False,  # エラーバーを非対称
+            "type": "data",
+            "array": err_value,
+            "arrayminus": err_value_minus,  # 各要素の負の値を指定
+        },
+    ),
+    row=2,
+    col=1,
 )
-table_fig.show()
-pd.DataFrame(table_values)
+error_fig.show()
