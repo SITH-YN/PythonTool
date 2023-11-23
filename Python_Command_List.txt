@@ -1,0 +1,24 @@
+# Create Virtual Environment
+python -m venv .venv
+
+# Only For CommandPrompt
+.venv\Scripts\activate.bat
+
+# Only For PowerShell
+Set-ExecutionPlicy RemoteSigned -Scope CurrentUser -Force
+.venv\Scripts\Activate.ps1
+
+# Update Pip 
+python -m pip install --upgrade pip
+
+# Install(Manual) 3rd Party Library
+python -m pip install xxxx
+
+# Install(Auto) 3rd Party Library List
+python -m pip install -r requirements.txt
+
+# Output 3rd Party Library List
+python -m pip freeze > requirements.txt
+
+# Update 3rd Party Library
+python -m pip install --upgrade xxxx
