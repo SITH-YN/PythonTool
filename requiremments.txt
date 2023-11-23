@@ -8,6 +8,8 @@ openpyxl
 Dash
 Plotly
 pandas
+numpy
+beautifulsoup4
 GitPython
 pysvn
 mpi4py
