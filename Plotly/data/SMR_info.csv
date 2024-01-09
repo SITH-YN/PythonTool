@@ -1,4 +1,4 @@
-SMR No,Project,Phase,SVN Fix,SMR Fix,author,checker,Plan WorkTime[h],Estimate WorkTime[h],Remain WorkTime[h]
+SMR No,Project,Phase,SVN Fix,SMR Fix,author,checker,Planned Working Time[h],Actual Working Time[h],Remain Working Time[h]
 SMR-XXXX-00000,L-A12,1A,2023/9/25,2023/9/30,A,X,300.00,100.00,200.00
 SMR-XXXX-00001,L-B18,CV,2023/9/30,2023/10/6,B,X,250.00,50.00,200.00
 SMR-XXXX-00002,L-B19,シス検,2023/10/9,2023/10/15,A,Y,200.00,50.00,150.00
