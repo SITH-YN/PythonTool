@@ -25,7 +25,7 @@ df_smr_info = pd.read_csv("../data/SMR_info.csv")
 df_member_info_total = pd.read_csv("../data/MEMBER_Info_Total.csv")
 df_member_info_weekly = pd.read_csv("../data/MEMBER_Info_Weekly.csv")
 df_smr_worktime = pd.read_csv("../data/SMR_WorkTime.csv")
-dft = pd.read_csv("../data/Short_Term_Energy_Outlook.csv")
+# dft = pd.read_csv("../data/Short_Term_Energy_Outlook.csv")
 
 fig = make_subplots(rows=3, cols=2, subplot_titles=["SMR-XXXXX-00001", "SMR-XXXXX-00001", "SMR-XXXXX-00002", "SMR-XXXXX-00002", "SMR-XXXXX-00003", "SMR-XXXXX-00003"])
 fig.add_trace(go.Bar(x=df_smr_worktime["Actual_Working_Time"], y=["SMR-XXXXX-00001"], orientation="h", text=df_smr_worktime["Actual_Working_Time"], name="Actual Working Time(SMR-XXXXX-00001)", offsetgroup=1), row=1, col=1)
@@ -257,21 +257,33 @@ app = dash.Dash(__name__)
 
 app.layout = html.Div([
     html.H4('SMR Working Time Report'),
-    dcc.Dropdown(
-        options=[
-            {'label': 'PlatForm', 'value': 'PF'},
-            {'label': 'Development Environment', 'value': 'DE'},
-            {'label': 'Diagnostic', 'value': 'DIAG'},
-            {'label': 'Safety Function', 'value': 'SF'},
-        ],
-        value='', style={'width': '40%'}
-    ),
+    # dcc.Dropdown(
+    #     options=[
+    #         {"label": "PlatForm", "value": "PF"},
+    #         {"label": "Software First", "value": "SWF"},
+    #         {"label": "Diagnostic", "value": "DIAG"},
+    #         {"label": "Safety Function", "value": "SF"},
+    #     ],
+    #     value="", style={'width': '40%'}
+    # ),
+    # dcc.RadioItems(
+    #     options=[
+    #         {"label": "PlatForm", "value": "PF"},
+    #         {"label": "Software First", "value": "SWF"},
+    #         {"label": "Diagnostic", "value": "DIAG"},
+    #         {"label": "Safety Function", "value": "SF"},
+    #     ],
+    #     value="",
+    #     style={"textAlign": "left"},
+    # ),
     html.P(id='table_out_smr_info'),
     dash.dash_table.DataTable(
         id='table_in_smr_info',
         columns=[{"name": i, "id": i}
                  for i in df_smr_info.columns],
         data=df_smr_info.to_dict('records'),
+        filter_action="native",
+        row_selectable="multi",
         style_cell=dict(textAlign='left'),
         style_header=dict(backgroundColor="paleturquoise"),
         style_data=dict(backgroundColor="lavender")
