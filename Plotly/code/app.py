@@ -12,7 +12,7 @@ import subprocess
 
 # 3rd party Libarary
 import dash
-import dash_daq as daq
+from dash import daq
 from dash import dcc
 from dash import html
 from dash.dash_table import DataTable
@@ -24,7 +24,6 @@ from plotly.subplots import make_subplots
 import json
 import numpy as np
 import pandas as pd
-from IPython.display import Image
 import webbrowser
 
 # Get SMR Information Data From CSV File
