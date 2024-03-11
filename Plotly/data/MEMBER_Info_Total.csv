@@ -1,6 +1,0 @@
-TEAM,MEMBER NAME,Plan WorkTime,Estimate WorkTime,Remain WorkTime,STATUS
-Diag,A,120.00,128.00,0.00,OK
-Diag,B,160.00,150.00,10.00,NG
-Diag,C,100.00,150.00,0.00,OK
-Diag,D,130.00,140.00,0.00,OK
-Diag,E,145.00,140.00,5.00,OK
