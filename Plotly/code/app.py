@@ -50,122 +50,87 @@ d_today = ""
 i = 0
 current_row = ROW_INIT
 
-
 # Get Data From CSV File
 df_smr_info = pd.read_csv("../data/SMR_info.csv", encoding="utf-8")  # encoding="shift_jis"
-df_smr_info.replace({"SMR START": {"/": "-"}, "SMR Fix": {"/": "-"}}, regex=True, inplace=True)
-
-
-# SMR数カウント&リストに格納
-# データフレームの行数取得処理
-# ヘッダ行からカウントするため0行スタートのため-1の必要なし
-smr_num = df_smr_info.shape[0]
-# グラフ描画エリア設定
-# 行：SMR数分 列：2種類のグラフ表示
-fig = make_subplots(rows=smr_num, cols=GRAPH_NUM, subplot_titles=["Work Time[h]", "Remain Work Time[h]"])
-
-
-# # Callback:Select Graph Data
-# @app.callback(
-#     Output("graph_work_time", "children"),
-#     Input("table_in_smr_info", "value")
-# )
-# def update_graph(selected_values):
-#     selected_data = 
-
-# DataFrameの種類（列）に応じて全行分のデータをリスト格納
-smr_no_list = df_smr_info["SMR No"].tolist()
-act_worktime_list = df_smr_info["Actual Working Time[h]"].tolist()
-remain_worktime_list = df_smr_info["Remain Working Time[h]"].tolist()
-plan_worktime_list = df_smr_info["Planned Working Time[h]"].tolist()
-smr_start_day_list = df_smr_info["SMR START"].tolist()
-smr_end_day_list = df_smr_info["SMR Fix"].tolist()
-d_today = datetime.date.today()
-
-for smr_no in smr_no_list:
-    # SMR予実（棒グラフ）
-    fig.add_trace(go.Bar(x=[act_worktime_list[i]], y=[smr_no], orientation="h", text=act_worktime_list[i], name="Actual Working Time(" + smr_no + ")", offsetgroup=1), row=current_row, col=COLUMN_BAR_GRAPH)
-    fig.add_trace(go.Bar(x=[remain_worktime_list[i]], y=[smr_no], orientation="h", text=remain_worktime_list[i], name="Remaining Working Time(" + smr_no + ")", offsetgroup=1, base=act_worktime_list[i]), row=current_row, col=COLUMN_BAR_GRAPH)
-    fig.add_trace(go.Bar(x=[plan_worktime_list[i]], y=[smr_no], orientation="h", text=plan_worktime_list[i], name="Planned Working Time(" + smr_no + ")", offsetgroup=2), row=current_row, col=COLUMN_BAR_GRAPH)
-    # 残作業工数（折れ線グラフ）
-    fig.add_trace(
-        go.Scatter(
-            mode="lines+markers",
-            x=[smr_start_day_list[i], smr_end_day_list[i]],
-            y=[plan_worktime_list[i], MIN_WORKTIME],
-            name="Expected Remaining Working Time(" + smr_no + ")",
-            line=dict(color="red", dash="dot"),
-            marker=dict(symbol="circle"),
-        ), row=current_row, col=COLUMN_LINE_GRAPH
-    )
-    fig.add_trace(
-        go.Scatter(
-            mode="lines+markers",
-            x=[smr_start_day_list[i], d_today],
-            y=[plan_worktime_list[i], remain_worktime_list[i]],
-            name="Actual Remaining Working Time(" + smr_no + ")",
-            line=dict(color="blue", dash="solid"),
-            marker=dict(symbol="circle"),
-        ), row=current_row, col=COLUMN_LINE_GRAPH
-    )
-    # Issue:基準線を引く
-    current_row += 1
-    i += 1
+df_smr_info.replace({"SMR_START": {"/": "-"}, "SMR_Fix": {"/": "-"}}, regex=True, inplace=True)
 
 app = dash.Dash(__name__)
 
-# Issue:SMR一覧情報/グラフから任意のSMRを非表示可能にする
-# https://dash.plotly.com/datatable/interactivity
 # レイアウト作成
 app.layout = html.Div([
-    html.H4('SMR Working Time Report'),
-    # html.P(id='table_out_smr_info'),
+    html.H4("SMR Working Time Report"),
+    html.Button(id="reload_button", n_clicks=0, children="Reload"),
     dash.dash_table.DataTable(
-        id='table_in_smr_info',
+        id="table_smr_info",
         columns=[{"name": i, "id": i}
                  for i in df_smr_info.columns],
-        data=df_smr_info.to_dict('records'),
+        data=df_smr_info.to_dict("records"),
         filter_action="native",
         row_selectable="multi",
+        selected_rows=[],
+        selected_row_ids=[],
         row_deletable=True,
         sort_action="native",
         sort_mode="multi",
-        style_cell=dict(textAlign='left'),
+        style_cell=dict(textAlign="left"),
         style_header=dict(backgroundColor="paleturquoise"),
         style_data=dict(backgroundColor="lavender"),
     ),
-    html.Button(id="apply-button", n_clicks=0, children="Apply"),
-    html.P(id="graph_work_time"),
-    dcc.Graph(
-        figure=fig
-    ),
+    dcc.Graph(id="graph_work_time")
 ])
 
-# Callback処理概要
-# データテーブルからチェックボックスを用いてグラフ表示対象データ選択
-# グラフ化対象データの更新
-# グラフ描画
-# INPUT:Applyボタンのクリック
-# STATE:データテーブルのチェックボックスのvalue
-# OUTPUT:
 
+@app.callback(
+    Output("graph_work_time", "figure"),
+    Input("table_smr_info", "selected_row_ids"),
+    Input("table_smr_info", "selected_rows"),
+    Input("reload_button", "n_clicks")
+)
+def update_graphs(n_clicks, selected_row_ids, selected_rows):
+    # Define Local Variable
 
-# @app.callback(
-#     # Output('table_out_smr_info', 'children'),
-#     # Input('table_in_smr_info', 'active_cell'),
-#     # )
-#     Output("graph_work_time", "children"),
-#     Input("apply-button", "n_clicks"),
-#     State("table_in_smr_info", "value")
-# )
-# # def update_graphs(active_cell):
-# #     """Update Graphs."""
-# #     if active_cell:
-# #         cell_data = df_smr_info.iloc[active_cell['row']][active_cell['column_id']]
-# #         return f"Data: \"{cell_data}\" from table cell: {active_cell}"
-# #     return "Click the table"
-# def update_graphs(n_clicks, value):
-#     dcc.Graph(figure=fig)
+    # if (n_clicks != 0):
+    if selected_row_ids is None:
+        df_update_smr_info = df_smr_info
+        # pandas Series works enough like a list for this to be OK
+        selected_row_ids = df_smr_info["id"]
+    else:
+        df_update_smr_info = df_smr_info.loc[selected_row_ids]
+
+    # SMR数カウント&リストに格納
+    # データフレームの行数取得処理
+    # ヘッダ行からカウントするため0行スタートのため-1の必要なし
+    smr_num = df_update_smr_info.shape[0]
+    if (smr_num < 1):
+        smr_num = 1
+
+    # DataFrameの種類（列）に応じて全行分のデータをリスト格納
+    smr_no_list = df_update_smr_info["SMR_No"].tolist()
+    act_worktime_list = df_update_smr_info["Actual_Working_Time[h]"].tolist()
+    remain_worktime_list = df_update_smr_info["Remain_Working_Time[h]"].tolist()
+    plan_worktime_list = df_update_smr_info["Planned_Working_Time[h]"].tolist()
+    smr_start_day_list = df_update_smr_info["SMR_START"].tolist()
+    smr_end_day_list = df_update_smr_info["SMR_Fix"].tolist()
+    d_today = datetime.date.today()
+
+    # グラフ描画エリア設定
+    # 行：SMR数分 列：2種類のグラフ表示
+    fig = make_subplots(rows=smr_num, cols=GRAPH_NUM, subplot_titles=["Work Time[h]", "Remain Work Time[h]"])
+
+    i = 0
+    current_row = ROW_INIT
+    for smr_no in smr_no_list:
+        # SMR予実（棒グラフ）
+        fig.add_trace(go.Bar(x=[act_worktime_list[i]], y=[smr_no], orientation="h", text=act_worktime_list[i], marker={"color": "HotPink"}, name="Actual Working Time(" + smr_no + ")", offsetgroup=1), row=current_row, col=COLUMN_BAR_GRAPH)
+        fig.add_trace(go.Bar(x=[remain_worktime_list[i]], y=[smr_no], orientation="h", text=remain_worktime_list[i], marker={"color": "Aqua"}, name="Remaining Working Time(" + smr_no + ")", offsetgroup=1, base=act_worktime_list[i]), row=current_row, col=COLUMN_BAR_GRAPH)
+        fig.add_trace(go.Bar(x=[plan_worktime_list[i]], y=[smr_no], orientation="h", text=plan_worktime_list[i], marker={"color": "LightGreen"}, name="Planned Working Time(" + smr_no + ")", offsetgroup=2), row=current_row, col=COLUMN_BAR_GRAPH)
+        # 残作業工数（折れ線グラフ）
+        fig.add_trace(go.Scatter(mode="lines+markers", x=[smr_start_day_list[i], smr_end_day_list[i]], y=[plan_worktime_list[i], MIN_WORKTIME], name="Expected Remaining Working Time(" + smr_no + ")", line=dict(color="red", dash="dot"), marker=dict(symbol="circle")), row=current_row, col=COLUMN_LINE_GRAPH)
+        fig.add_trace(go.Scatter(mode="lines+markers", x=[smr_start_day_list[i], d_today], y=[plan_worktime_list[i], remain_worktime_list[i]], name="Actual Remaining Working Time(" + smr_no + ")", line=dict(color="blue", dash="solid"), marker=dict(symbol="circle")), row=current_row, col=COLUMN_LINE_GRAPH)
+
+        current_row += 1
+        i += 1
+    return (fig)
 
 
 if __name__ == '__main__':
