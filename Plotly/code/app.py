@@ -125,7 +125,8 @@ def update_graphs(n_clicks, selected_row_ids, selected_rows):
         fig.add_trace(go.Bar(x=[remain_worktime_list[i]], y=[smr_no], orientation="h", text=remain_worktime_list[i], marker={"color": "Aqua"}, name="Remaining Working Time(" + smr_no + ")", offsetgroup=1, base=act_worktime_list[i]), row=current_row, col=COLUMN_BAR_GRAPH)
         fig.add_trace(go.Bar(x=[plan_worktime_list[i]], y=[smr_no], orientation="h", text=plan_worktime_list[i], marker={"color": "LightGreen"}, name="Planned Working Time(" + smr_no + ")", offsetgroup=2), row=current_row, col=COLUMN_BAR_GRAPH)
         # 残作業工数（折れ線グラフ）
-        fig.add_trace(go.Scatter(mode="lines+markers", x=[smr_start_day_list[i], smr_end_day_list[i]], y=[plan_worktime_list[i], MIN_WORKTIME], name="Expected Remaining Working Time(" + smr_no + ")", line=dict(color="red", dash="dot"), marker=dict(symbol="circle")), row=current_row, col=COLUMN_LINE_GRAPH)
+        fig.add_trace(go.Scatter(mode="lines", x=[d_today, d_today], y=[plan_worktime_list[i], MIN_WORKTIME], name="Today", line=dict(color="black", dash="dot")), row=current_row, col=COLUMN_LINE_GRAPH)
+        fig.add_trace(go.Scatter(mode="lines+markers", x=[smr_start_day_list[i], smr_end_day_list[i]], y=[plan_worktime_list[i], MIN_WORKTIME], name="Expected Remaining Working Time(" + smr_no + ")", line=dict(color="red", dash="solid"), marker=dict(symbol="circle")), row=current_row, col=COLUMN_LINE_GRAPH)
         fig.add_trace(go.Scatter(mode="lines+markers", x=[smr_start_day_list[i], d_today], y=[plan_worktime_list[i], remain_worktime_list[i]], name="Actual Remaining Working Time(" + smr_no + ")", line=dict(color="blue", dash="solid"), marker=dict(symbol="circle")), row=current_row, col=COLUMN_LINE_GRAPH)
 
         current_row += 1
