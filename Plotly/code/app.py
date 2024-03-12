@@ -77,12 +77,25 @@ app.layout = html.Div([
         row_deletable=True,
         sort_action="native",
         sort_mode="multi",
+        # page_current=0,
+        # page_size=10,
+        # page_action="custom",
         style_cell=dict(textAlign="left"),
         style_header=dict(backgroundColor="paleturquoise"),
         style_data=dict(backgroundColor="lavender"),
     ),
     dcc.Graph(id="graph_work_time")
 ])
+
+
+# @app.callback(
+#     Output("table_smr_info", "data"),
+#     Input("table_smr_info", "page_current"),
+#     Input("table_smr_info", "page_size"))
+# def update_table(page_current, page_size):
+#     return df_smr_info.iloc[
+#         page_current*page_size:(page_current + 1)*page_size
+#     ].to_dict("records")
 
 
 @app.callback(
