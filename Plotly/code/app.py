@@ -7,6 +7,7 @@
 # Standard Library
 import csv
 import datetime
+import glob
 import os
 import shutil
 import tkinter
@@ -39,6 +40,8 @@ COLUMN_LINE_GRAPH = 2
 MIN_WORKTIME = 0.00
 
 # Global Variable
+csvfile_path_list = []
+csvfile_path = ""
 smr_num = 0
 smr_no_list = []
 act_worktime_list = []
@@ -51,8 +54,10 @@ i = 0
 current_row = ROW_INIT
 
 # Get Data From CSV File
-df_smr_info = pd.read_csv("../data/SMR_info.csv", encoding="utf-8")  # encoding="shift_jis"
-df_smr_info.replace({"SMR_START": {"/": "-"}, "SMR_Fix": {"/": "-"}}, regex=True, inplace=True)
+csvfile_path_list = glob.glob(r"../data/SMR_工数データ/csv/Diag/工数集計_*.csv")
+csvfile_path = csvfile_path_list[0].replace("\\", "/")
+df_smr_info = pd.read_csv(csvfile_path, encoding="shift_jis")  # encoding="utf-8"
+df_smr_info.replace({"SMR開始日": {"/": "-"}, "SMR Fix": {"/": "-"}}, regex=True, inplace=True)
 
 app = dash.Dash(__name__)
 
@@ -105,12 +110,12 @@ def update_graphs(n_clicks, selected_row_ids, selected_rows):
         smr_num = 1
 
     # DataFrameの種類（列）に応じて全行分のデータをリスト格納
-    smr_no_list = df_update_smr_info["SMR_No"].tolist()
-    act_worktime_list = df_update_smr_info["Actual_Working_Time[h]"].tolist()
-    remain_worktime_list = df_update_smr_info["Remain_Working_Time[h]"].tolist()
-    plan_worktime_list = df_update_smr_info["Planned_Working_Time[h]"].tolist()
-    smr_start_day_list = df_update_smr_info["SMR_START"].tolist()
-    smr_end_day_list = df_update_smr_info["SMR_Fix"].tolist()
+    smr_no_list = df_update_smr_info["SMR"].tolist()
+    act_worktime_list = df_update_smr_info["実績工数"].tolist()
+    remain_worktime_list = df_update_smr_info["残工数"].tolist()
+    plan_worktime_list = df_update_smr_info["見積工数"].tolist()
+    smr_start_day_list = df_update_smr_info["SMR開始日"].tolist()
+    smr_end_day_list = df_update_smr_info["SMR Fix日"].tolist()
     d_today = datetime.date.today()
 
     # グラフ描画エリア設定
