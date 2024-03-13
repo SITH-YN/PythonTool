@@ -5,32 +5,27 @@
 # visit http://127.0.0.1:8050/ in your web browser.
 
 # Standard Library
-import csv
+# import csv
 import datetime
 import glob
-import os
-import shutil
-import tkinter
+# import os
+# import shutil
+# import tkinter
 
 # 3rd Party Library
-import openpyxl
-import win32com.client
-
+# import bs4
+# from bs4 import BeautifulSoup
 import dash
-# import dash_daq as daq
-from dash import dcc
-from dash import html
-from dash.dash_table import DataTable
-from dash.dependencies import Input, Output, State, ALL, ALLSMALLER, MATCH
-import plotly
-import plotly.graph_objects as go
-import plotly.express as px
-from plotly.subplots import make_subplots
-import json
-import numpy as np
+# import json
+# import numpy as np
+# import openpyxl
 import pandas as pd
-# from IPython.display import Image
+import plotly
+# import plotly.graph_objects as go
+# import plotly.express as px
+from plotly.subplots import make_subplots
 import webbrowser
+# import win32com.client
 
 # Global Constant Define
 GRAPH_NUM = 2
@@ -62,47 +57,36 @@ df_smr_info.replace({"SMR開始日": {"/": "-"}, "SMR Fix日": {"/": "-"}}, rege
 app = dash.Dash(__name__)
 
 # レイアウト作成
-app.layout = html.Div([
-    html.H4("SMR Working Time Report"),
-    html.Button(id="reload_button", n_clicks=0, children="Reload"),
+app.layout = dash.html.Div([
+    dash.html.H4("SMR Working Time Report"),
+    dash.html.Button(id="reload_button", n_clicks=0, children="Reload"),
     dash.dash_table.DataTable(
         id="table_smr_info",
         columns=[{"name": i, "id": i}
                  for i in df_smr_info.columns],
         data=df_smr_info.to_dict("records"),
+        editable=True,
         filter_action="native",
+        page_size=10,
+        row_deletable=True,
         row_selectable="multi",
         selected_rows=[],
         selected_row_ids=[],
-        row_deletable=True,
         sort_action="native",
         sort_mode="multi",
-        # page_current=0,
-        # page_size=10,
-        # page_action="custom",
         style_cell=dict(textAlign="left"),
         style_header=dict(backgroundColor="paleturquoise"),
         style_data=dict(backgroundColor="lavender"),
     ),
-    dcc.Graph(id="graph_work_time")
+    dash.dcc.Graph(id="graph_work_time")
 ])
 
 
-# @app.callback(
-#     Output("table_smr_info", "data"),
-#     Input("table_smr_info", "page_current"),
-#     Input("table_smr_info", "page_size"))
-# def update_table(page_current, page_size):
-#     return df_smr_info.iloc[
-#         page_current*page_size:(page_current + 1)*page_size
-#     ].to_dict("records")
-
-
 @app.callback(
-    Output("graph_work_time", "figure"),
-    Input("table_smr_info", "selected_row_ids"),
-    Input("table_smr_info", "selected_rows"),
-    Input("reload_button", "n_clicks")
+    dash.dependencies.Output("graph_work_time", "figure"),
+    dash.dependencies.Input("table_smr_info", "selected_row_ids"),
+    dash.dependencies.Input("table_smr_info", "selected_rows"),
+    dash.dependencies.Input("reload_button", "n_clicks")
 )
 def update_graphs(n_clicks, selected_row_ids, selected_rows):
     # Define Local Variable
@@ -139,13 +123,13 @@ def update_graphs(n_clicks, selected_row_ids, selected_rows):
     current_row = ROW_INIT
     for smr_no in smr_no_list:
         # SMR予実（棒グラフ）
-        fig.add_trace(go.Bar(x=[act_worktime_list[i]], y=[smr_no], orientation="h", text=act_worktime_list[i], marker={"color": "HotPink"}, name="Actual Working Time(" + smr_no + ")", offsetgroup=1), row=current_row, col=COLUMN_BAR_GRAPH)
-        fig.add_trace(go.Bar(x=[remain_worktime_list[i]], y=[smr_no], orientation="h", text=remain_worktime_list[i], marker={"color": "Aqua"}, name="Remaining Working Time(" + smr_no + ")", offsetgroup=1, base=act_worktime_list[i]), row=current_row, col=COLUMN_BAR_GRAPH)
-        fig.add_trace(go.Bar(x=[plan_worktime_list[i]], y=[smr_no], orientation="h", text=plan_worktime_list[i], marker={"color": "LightGreen"}, name="Planned Working Time(" + smr_no + ")", offsetgroup=2), row=current_row, col=COLUMN_BAR_GRAPH)
+        fig.add_trace(plotly.graph_objects.Bar(x=[act_worktime_list[i]], y=[smr_no], orientation="h", text=act_worktime_list[i], marker={"color": "HotPink"}, name="実績工数", offsetgroup=1), row=current_row, col=COLUMN_BAR_GRAPH)
+        fig.add_trace(plotly.graph_objects.Bar(x=[remain_worktime_list[i]], y=[smr_no], orientation="h", text=remain_worktime_list[i], marker={"color": "Aqua"}, name="残工数", offsetgroup=1, base=act_worktime_list[i]), row=current_row, col=COLUMN_BAR_GRAPH)
+        fig.add_trace(plotly.graph_objects.Bar(x=[plan_worktime_list[i]], y=[smr_no], orientation="h", text=plan_worktime_list[i], marker={"color": "LightGreen"}, name="予定工数", offsetgroup=2), row=current_row, col=COLUMN_BAR_GRAPH)
         # 残作業工数（折れ線グラフ）
-        fig.add_trace(go.Scatter(mode="lines", x=[d_today, d_today], y=[plan_worktime_list[i], MIN_WORKTIME], name="Today", line=dict(color="black", dash="dot")), row=current_row, col=COLUMN_LINE_GRAPH)
-        fig.add_trace(go.Scatter(mode="lines+markers", x=[smr_start_day_list[i], smr_end_day_list[i]], y=[plan_worktime_list[i], MIN_WORKTIME], name="Expected Remaining Working Time(" + smr_no + ")", line=dict(color="red", dash="solid"), marker=dict(symbol="circle")), row=current_row, col=COLUMN_LINE_GRAPH)
-        fig.add_trace(go.Scatter(mode="lines+markers", x=[smr_start_day_list[i], d_today], y=[plan_worktime_list[i], remain_worktime_list[i]], name="Actual Remaining Working Time(" + smr_no + ")", line=dict(color="blue", dash="solid"), marker=dict(symbol="circle")), row=current_row, col=COLUMN_LINE_GRAPH)
+        fig.add_trace(plotly.graph_objects.Scatter(mode="lines", x=[d_today, d_today], y=[plan_worktime_list[i], MIN_WORKTIME], name="本日", line=dict(color="black", dash="dot")), row=current_row, col=COLUMN_LINE_GRAPH)
+        fig.add_trace(plotly.graph_objects.Scatter(mode="lines+markers", x=[smr_start_day_list[i], smr_end_day_list[i]], y=[plan_worktime_list[i], MIN_WORKTIME], name="予測残工数", line=dict(color="red", dash="solid"), marker=dict(symbol="circle")), row=current_row, col=COLUMN_LINE_GRAPH)
+        fig.add_trace(plotly.graph_objects.Scatter(mode="lines+markers", x=[smr_start_day_list[i], d_today], y=[plan_worktime_list[i], remain_worktime_list[i]], name="本日時点残工数", line=dict(color="blue", dash="solid"), marker=dict(symbol="circle")), row=current_row, col=COLUMN_LINE_GRAPH)
 
         current_row += 1
         i += 1
