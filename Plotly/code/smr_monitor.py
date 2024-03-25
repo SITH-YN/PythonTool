@@ -68,7 +68,7 @@ app.layout = dash.html.Div([
         editable=True,
         filter_action="native",
         page_size=10,
-        row_deletable=True,
+        row_deletable=False,
         row_selectable="multi",
         selected_rows=[],
         selected_row_ids=[],
@@ -80,10 +80,10 @@ app.layout = dash.html.Div([
         style_data_conditional=[
                 {"if": {"column_id": "着地予想工数", "filter_query": "{着地予想%} <= 100"}, "backgroundColor": "lightgreen"},
                 {"if": {"column_id": "着地予想工数", "filter_query": "{着地予想%} > 100"}, "backgroundColor": "yellow"},
-                {"if": {"column_id": "着地予想工数", "filter_query": "{着地予想%} > 120"}, "backgroundColor": "red"},
+                {"if": {"column_id": "着地予想工数", "filter_query": "{着地予想%} > 120"}, "backgroundColor": "#FF3300"},
                 {"if": {"column_id": "着地予想%", "filter_query": "{着地予想%} <= 100"}, "backgroundColor": "lightgreen"},
                 {"if": {"column_id": "着地予想%", "filter_query": "{着地予想%} > 100"}, "backgroundColor": "yellow"},
-                {"if": {"column_id": "着地予想%", "filter_query": "{着地予想%} > 120"}, "backgroundColor": "red"},
+                {"if": {"column_id": "着地予想%", "filter_query": "{着地予想%} > 120"}, "backgroundColor": "#FF3300"},
             ]
     ),
     dash.dcc.Graph(id="graph_work_time")
