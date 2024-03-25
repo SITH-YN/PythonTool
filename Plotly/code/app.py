@@ -49,7 +49,7 @@ i = 0
 current_row = ROW_INIT
 
 # Get Data From CSV File
-csvfile_path_list = glob.glob(r"../data/SMR_工数データ/csv/Diag/工数集計_*.csv")
+csvfile_path_list = glob.glob(r"./*.csv")
 csvfile_path = csvfile_path_list[0].replace("\\", "/")
 df_smr_info = pd.read_csv(csvfile_path, encoding="shift_jis")  # encoding="utf-8"
 df_smr_info.replace({"SMR開始日": {"/": "-"}, "SMR Fix日": {"/": "-"}}, regex=True, inplace=True)
