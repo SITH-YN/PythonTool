@@ -77,6 +77,14 @@ app.layout = dash.html.Div([
         style_cell=dict(textAlign="left"),
         style_header=dict(backgroundColor="paleturquoise"),
         style_data=dict(backgroundColor="lavender"),
+        style_data_conditional=[
+                {"if": {"column_id": "着地予想工数", "filter_query": "{着地予想%} <= 100"}, "backgroundColor": "lightgreen"},
+                {"if": {"column_id": "着地予想工数", "filter_query": "{着地予想%} > 100"}, "backgroundColor": "yellow"},
+                {"if": {"column_id": "着地予想工数", "filter_query": "{着地予想%} > 120"}, "backgroundColor": "red"},
+                {"if": {"column_id": "着地予想%", "filter_query": "{着地予想%} <= 100"}, "backgroundColor": "lightgreen"},
+                {"if": {"column_id": "着地予想%", "filter_query": "{着地予想%} > 100"}, "backgroundColor": "yellow"},
+                {"if": {"column_id": "着地予想%", "filter_query": "{着地予想%} > 120"}, "backgroundColor": "red"},
+            ]
     ),
     dash.dcc.Graph(id="graph_work_time")
 ])
