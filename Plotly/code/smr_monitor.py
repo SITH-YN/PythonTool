@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """Dash App."""
-# Run this app with `python sample.py` and
+# Run this app with `python smr_monitor.py` and
 # visit http://127.0.0.1:8050/ in your web browser.
 
 # Standard Library
@@ -58,7 +58,7 @@ app = dash.Dash(__name__)
 
 # レイアウト作成
 app.layout = dash.html.Div([
-    dash.html.H4("SMR Working Time Report"),
+    dash.html.H4("SMR Working Time Monitor"),
     dash.html.Button(id="reload_button", n_clicks=0, children="Reload"),
     dash.dash_table.DataTable(
         id="table_smr_info",
@@ -145,5 +145,6 @@ def update_graphs(n_clicks, selected_row_ids, selected_rows):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True, use_reloader=True)
     webbrowser.open_new_tab("http://127.0.0.1:8050/")
+    # app.run_server(debug=True, use_reloader=True)
+    app.run_server(debug=False, use_reloader=True)
