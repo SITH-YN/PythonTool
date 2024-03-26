@@ -16,6 +16,7 @@ import glob
 # import bs4
 # from bs4 import BeautifulSoup
 import dash
+import dash_daq
 # import json
 # import numpy as np
 # import openpyxl
@@ -59,7 +60,8 @@ app = dash.Dash(__name__)
 # レイアウト作成
 app.layout = dash.html.Div([
     dash.html.H4("SMR Working Time Monitor"),
-    dash.html.Button(id="reload_button", n_clicks=0, children="Reload"),
+    dash_daq.PowerButton(id="power_button", on=False, size=10, color="green"),
+    # dash.html.Button(id="reload_button", n_clicks=0, children="Reload"),
     dash.dash_table.DataTable(
         id="table_smr_info",
         columns=[{"name": i, "id": i}
@@ -67,7 +69,8 @@ app.layout = dash.html.Div([
         data=df_smr_info.to_dict("records"),
         editable=True,
         filter_action="native",
-        page_size=10,
+        fixed_rows={"headers": True},
+        page_size=30,
         row_deletable=False,
         row_selectable="multi",
         selected_rows=[],
@@ -84,7 +87,8 @@ app.layout = dash.html.Div([
                 {"if": {"column_id": "着地予想%", "filter_query": "{着地予想%} <= 100"}, "backgroundColor": "lightgreen"},
                 {"if": {"column_id": "着地予想%", "filter_query": "{着地予想%} > 100"}, "backgroundColor": "yellow"},
                 {"if": {"column_id": "着地予想%", "filter_query": "{着地予想%} > 120"}, "backgroundColor": "#FF3300"},
-            ]
+            ],
+        style_table={"height": 400, "overflowY": "auto"}
     ),
     dash.dcc.Graph(id="graph_work_time")
 ])
@@ -94,7 +98,8 @@ app.layout = dash.html.Div([
     dash.dependencies.Output("graph_work_time", "figure"),
     dash.dependencies.Input("table_smr_info", "selected_row_ids"),
     dash.dependencies.Input("table_smr_info", "selected_rows"),
-    dash.dependencies.Input("reload_button", "n_clicks")
+    dash.dependencies.Input("power_button", "on")
+    # dash.dependencies.Input("reload_button", "n_clicks")
 )
 def update_graphs(n_clicks, selected_row_ids, selected_rows):
     # Define Local Variable
@@ -145,6 +150,6 @@ def update_graphs(n_clicks, selected_row_ids, selected_rows):
 
 
 if __name__ == '__main__':
-    webbrowser.open_new_tab("http://127.0.0.1:8050/")
+    # webbrowser.open_new_tab("http://127.0.0.1:8050/")
     # app.run_server(debug=True, use_reloader=True)
     app.run_server(debug=False, use_reloader=True)
