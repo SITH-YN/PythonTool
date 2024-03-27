@@ -26,7 +26,7 @@ import plotly
 # import plotly.graph_objects as go
 # import plotly.express as px
 from plotly.subplots import make_subplots
-# import webbrowser
+import webbrowser
 # import win32com.client
 
 # Global Constant Define
@@ -150,6 +150,6 @@ def update_graphs(n_clicks, selected_row_ids, selected_rows):
 
 
 if __name__ == '__main__':
-    # webbrowser.open_new_tab("http://127.0.0.1:8050/")
+    webbrowser.open_new_tab("http://127.0.0.1:8050/")
     # app.run_server(debug=True, use_reloader=True)
-    app.run_server(debug=False, use_reloader=True)
+    app.run_server(debug=False, use_reloader=False)
