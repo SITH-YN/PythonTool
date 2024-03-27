@@ -10,13 +10,14 @@ import datetime
 import glob
 # import os
 # import shutil
+# import time
 # import tkinter
 
 # 3rd Party Library
 # import bs4
 # from bs4 import BeautifulSoup
 import dash
-import dash_daq
+# import dash_daq
 # import json
 # import numpy as np
 # import openpyxl
@@ -25,7 +26,7 @@ import plotly
 # import plotly.graph_objects as go
 # import plotly.express as px
 from plotly.subplots import make_subplots
-import webbrowser
+# import webbrowser
 # import win32com.client
 
 # Global Constant Define
@@ -60,8 +61,8 @@ app = dash.Dash(__name__)
 # レイアウト作成
 app.layout = dash.html.Div([
     dash.html.H4("SMR Working Time Monitor"),
-    dash_daq.PowerButton(id="power_button", on=False, size=10, color="green"),
-    # dash.html.Button(id="reload_button", n_clicks=0, children="Reload"),
+    # dash_daq.PowerButton(id="power_button", on=False, size=10, color="green"),
+    dash.html.Button(id="reload_button", n_clicks=0, children="Reload"),
     dash.dash_table.DataTable(
         id="table_smr_info",
         columns=[{"name": i, "id": i}
@@ -98,13 +99,12 @@ app.layout = dash.html.Div([
     dash.dependencies.Output("graph_work_time", "figure"),
     dash.dependencies.Input("table_smr_info", "selected_row_ids"),
     dash.dependencies.Input("table_smr_info", "selected_rows"),
-    dash.dependencies.Input("power_button", "on")
-    # dash.dependencies.Input("reload_button", "n_clicks")
+    # dash.dependencies.Input("power_button", "on")
+    dash.dependencies.Input("reload_button", "n_clicks")
 )
 def update_graphs(n_clicks, selected_row_ids, selected_rows):
     # Define Local Variable
 
-    # if (n_clicks != 0):
     if selected_row_ids is None:
         df_update_smr_info = df_smr_info
         # pandas Series works enough like a list for this to be OK
