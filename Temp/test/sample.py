@@ -14,26 +14,44 @@
 # Global Constant Define
 
 
-def main():
-    """sample."""
+# def main():
+#     """sample."""
 
-    # Refer Global Variable
+#     # Refer Global Variable
 
-    # Local Variable
-    x = 0
-    y = 0
-    sum = 0
+#     # Local Variable
+#     x = 0
+#     y = 0
+#     sum = 0
 
-    # Local Constant Define
+#     # Local Constant Define
 
-    x = 10
-    y = 20
-    sum = func_sum(x, y)
-    print(sum)
+#     x = 10
+#     y = 20
+#     sum = func_sum(x, y)
+#     print(sum)
 
 
 def func_sum(x, y):
-    """sample."""
+    """
+    func_sum.
+
+    pramaeters
+    --------------------
+    arg1:int
+    arg2:int
+    --------------------
+
+    return
+    --------------------
+    result:sum
+    --------------------
+
+    Examples
+    --------------------
+    >>> func_sum(10, 20)
+    30
+    """
 
     # Refer Global Variable
 
@@ -47,4 +65,6 @@ def func_sum(x, y):
 
 
 if __name__ == "__main__":
-    main()
+    import doctest
+    doctest.testmod()
+    # main()

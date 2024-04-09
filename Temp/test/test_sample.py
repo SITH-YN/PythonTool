@@ -21,4 +21,4 @@ import sample
     (20, 40, 60),
 ])
 def test_func_sum(x, y, expected):
-    assert func_sum(x, y) == expected
+    assert sample.func_sum(x, y) == expected
