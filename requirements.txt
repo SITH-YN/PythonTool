@@ -2,6 +2,7 @@
 flake8
 mypy
 pydocstyle
+pytest
 pyinstaller
 pywin32
 openpyxl
@@ -9,7 +10,7 @@ Dash
 Plotly
 pandas
 numpy
-beautifulsoup4
+bs4
 GitPython
 pysvn
 mpi4py
