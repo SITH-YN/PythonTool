@@ -1,0 +1,5 @@
+# 3rd Party library
+pyinstaller
+Dash
+Plotly
+pandas

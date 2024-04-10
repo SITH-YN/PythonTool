@@ -1,0 +1,7 @@
+# 3rd Party library
+flake8
+mypy
+pydocstyle
+pytest
+pyinstaller
+openpyxl
