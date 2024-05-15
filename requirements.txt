@@ -6,6 +6,7 @@ pytest
 pyinstaller
 pywin32
 openpyxl
+pywebview
 Dash
 Plotly
 pandas
