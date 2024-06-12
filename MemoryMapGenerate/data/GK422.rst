@@ -1,0 +1,691 @@
+[ GK422.rst    2024/06/12 16:25:28 ]
+
+[ Memory Block Information ]
+BlockName   SectionName                                StartAddress EndAddress   Used size    Free size 
+========================================================================================================
+MEMBLOCK_STARTUP_BOOT                                  H'00000000   H'00007FFF   H'00000000   H'00008000
+            --------------------------------------------------------------------------------------------
+            .BOOTVECT                                  H'00000000   H'--------   H'00000000
+========================================================================================================
+MEMBLOCK_REPROG_ROM                                    H'00008000   H'00037FFF   H'00000000   H'00030000
+            --------------------------------------------------------------------------------------------
+            .REPROG_ROM                                H'00008000   H'--------   H'00000000
+========================================================================================================
+MEMBLOCK_PLANT_ROM                                     H'00038000   H'00047FFF   H'00000000   H'00010000
+            --------------------------------------------------------------------------------------------
+            .PLANT_ROM                                 H'00038000   H'--------   H'00000000
+========================================================================================================
+MEMBLOCK_KEYMGR_ROM                                    H'00048000   H'00057FFF   H'00000000   H'00010000
+            --------------------------------------------------------------------------------------------
+            .KEYMGR_ROM                                H'00048000   H'--------   H'00000000
+========================================================================================================
+MEMBLOCK_FBLHEDER                                      H'00058000   H'000581FF   H'00000000   H'00000200
+            --------------------------------------------------------------------------------------------
+            .FBLHEADER                                 H'00058000   H'--------   H'00000000
+========================================================================================================
+MEMBLOCK_BOOT                                          H'00058200   H'0005F7FF   H'00000E46   H'000067BA
+            --------------------------------------------------------------------------------------------
+            .sect_pf_startup_ebase                     H'00058200   H'000583FF   H'00000200
+            .sect_pf_startup_intvect                   H'00058400   H'000589E7   H'000005E8
+            .start_host                                H'000589E8   H'00058CBF   H'000002D8
+            .sect_pf_startup_prg                       H'00058CC0   H'00058E2F   H'00000170
+            .sect_pf_startup_hook                      H'00058E30   H'00059045   H'00000216
+            .sect_pf_startup_rom                       H'00059048   H'--------   H'00000000
+            .sect_pf_startup_cfg                       H'00059048   H'--------   H'00000000
+========================================================================================================
+MEMBLOCK_APLBOOT                                       H'0005F800   H'0005FFFF   H'000007EC   H'00000014
+            --------------------------------------------------------------------------------------------
+            .APLBOOT_ROM_TOP                           H'0005F800   H'--------   H'00000000
+            .OS_EXCVEC_CORE0_CODE                      H'0005F800   H'0005F9FF   H'00000200
+            .OS_INTVEC_CORE0_CODE                      H'0005FA00   H'0005FFEB   H'000005EC
+            .APLBOOT_ROM_END                           H'00060000   H'--------   H'00000000
+========================================================================================================
+MEMBLOCK_CAL_DATA                                      H'00060000   H'00061FFF   H'000006F8   H'00001908
+            --------------------------------------------------------------------------------------------
+            .CAL_DATA_TOP                              H'00060000   H'--------   H'00000000
+            .rosda_start                               H'00060000   H'--------   H'00000000
+            .version                                   H'00060000   H'0006001F   H'00000020
+            .APS_CAL                                   H'00060020   H'--------   H'00000000
+            .MR_CAL                                    H'00060020   H'00060413   H'000003F4
+            .FH_CAL                                    H'00060414   H'00060426   H'00000013
+            .WR_CAL                                    H'00060428   H'000606F7   H'000002D0
+            .DL_CAL                                    H'000606F8   H'--------   H'00000000
+            .APLOS_CAL                                 H'000606F8   H'--------   H'00000000
+            .NWS_CAL                                   H'000606F8   H'--------   H'00000000
+            .SAS_CAL                                   H'000606F8   H'--------   H'00000000
+            .SLPS_CAL                                  H'000606F8   H'--------   H'00000000
+            .MEMS_CAL                                  H'000606F8   H'--------   H'00000000
+            .CAL_DATA_END                              H'00062000   H'--------   H'00000000
+========================================================================================================
+MEMBLOCK_CONST_DATA                                    H'00062000   H'00230F7F   H'00010981   H'001BE5FF
+            --------------------------------------------------------------------------------------------
+            .CONST_DATA_TOP                            H'00062000   H'--------   H'00000000
+            .APS_CONST                                 H'00062000   H'--------   H'00000000
+            .MR_CONST                                  H'00062000   H'0006200E   H'0000000F
+            .FH_CONST                                  H'00062010   H'00062021   H'00000012
+            .WR_CONST                                  H'00062024   H'0006206F   H'0000004C
+            .DL_CONST                                  H'00062070   H'--------   H'00000000
+            .APLOS_CONST                               H'00062070   H'000622AB   H'0000023C
+            .CMNPKG_CONST                              H'000622AC   H'--------   H'00000000
+            .PAL_CONST                                 H'000622AC   H'--------   H'00000000
+            .NWS_CONST                                 H'000622AC   H'00062C01   H'00000956
+            .SAS_CONST                                 H'00062C04   H'00062E37   H'00000234
+            .NVS_CONST                                 H'00062E38   H'0006309B   H'00000264
+            .SYSS_CONST                                H'0006309C   H'--------   H'00000000
+            .E2E_CONST                                 H'0006309C   H'--------   H'00000000
+            .CRC_CONST                                 H'0006309C   H'0006329B   H'00000200
+            .OS_CONST                                  H'000632A0   H'000632A3   H'00000004
+            .OS_CONST_FAST                             H'000632A4   H'000634E3   H'00000240
+            .OS_CORE0_CONST_FAST                       H'000634E4   H'00064987   H'000014A4
+            .OS_INTVEC_CORE0_CONST                     H'00064A00   H'--------   H'00000000
+            .OS_EXCVEC_CORE0_CONST                     H'00064A00   H'--------   H'00000000
+            .RTE_CONST                                 H'00064A00   H'00064A02   H'00000003
+            .BSWM_CONST                                H'00064A04   H'00064D7B   H'00000378
+            .ECUM_CONST                                H'00064D7C   H'00064DAF   H'00000034
+            .WDGM_CONST                                H'00064DB0   H'000650B7   H'00000308
+            .WDGIF_CONST                               H'000650B8   H'000650CB   H'00000014
+            .DCM_CONST                                 H'000650CC   H'00069B63   H'00004A98
+            .DEM_CONST                                 H'00069B64   H'0006A063   H'00000500
+            .DET_CONST                                 H'0006A064   H'--------   H'00000000
+            .FIM_CONST                                 H'0006A064   H'0006A0AF   H'0000004C
+            .NVM_CONST                                 H'0006A0B0   H'0006B387   H'000012D8
+            .MEMIF_CONST                               H'0006B388   H'0006B3CB   H'00000044
+            .FEE_CONST                                 H'0006B3CC   H'0006B7A7   H'000003DC
+            .CANTP_CONST                               H'0006B7A8   H'0006B7AF   H'00000008
+            .PDUR_CONST                                H'0006B7B0   H'0006BC0F   H'00000460
+            .COM_CONST                                 H'0006BC10   H'0006D39B   H'0000178C
+            .COMM_CONST                                H'0006D39C   H'0006D473   H'000000D8
+            .CANSM_CONST                               H'0006D474   H'0006D475   H'00000002
+            .CANNM_CONST                               H'0006D478   H'0006D4C2   H'0000004B
+            .NM_CONST                                  H'0006D4C4   H'0006D50A   H'00000047
+            .CANIF_CONST                               H'0006D50C   H'0006DA6E   H'00000563
+            .PIO_CONST                                 H'0006DA70   H'--------   H'00000000
+            .ADI_CONST                                 H'0006DA70   H'--------   H'00000000
+            .VSTDLIB_CONST                             H'0006DA70   H'0006DA8F   H'00000020
+            .LINIF_CONST                               H'0006DA90   H'--------   H'00000000
+            .LINSM_CONST                               H'0006DA90   H'0006DA94   H'00000005
+            .CDD_EXAUTOSAR_CONST                       H'0006DA98   H'--------   H'00000000
+            .WDGS_CONST                                H'0006DA98   H'--------   H'00000000
+            .DMA_CONST                                 H'0006DA98   H'--------   H'00000000
+            .STARTUPS_CONST                            H'0006DA98   H'--------   H'00000000
+            .SLPS_CONST                                H'0006DA98   H'0006DA9C   H'00000005
+            .MEMS_CONST                                H'0006DAA0   H'0006DB41   H'000000A2
+            .ADDRV_CONST                               H'0006DB44   H'0006DBCF   H'0000008C
+            .PORTDRV_CONST                             H'0006DBD0   H'0006DC07   H'00000038
+            .MTRS_CONST                                H'0006DC08   H'--------   H'00000000
+            .SWITCH_CONST                              H'0006DC08   H'0006DDB7   H'000001B0
+            .CDDMAIN_CONST                             H'0006DDB8   H'0006DE9F   H'000000E8
+            .NDRCK_CONST                               H'0006DEA0   H'0006DF8F   H'000000F0
+            .CDD_MEASURES_CONST                        H'0006DF90   H'--------   H'00000000
+            .CDD_TRCVS_CONST                           H'0006DF90   H'0006DFA5   H'00000016
+            .SLFTSTS_CONST                             H'0006DFA8   H'--------   H'00000000
+            .MIRM_CONST                                H'0006DFA8   H'0006DFC7   H'00000020
+            .PWSW_CONST                                H'0006DFC8   H'0006E0D7   H'00000110
+            .PWMDRV_CONST                              H'0006E0D8   H'0006E0E8   H'00000011
+            .LED_CONST                                 H'0006E0EC   H'0006E11B   H'00000030
+            .DBGS_CONST                                H'0006E11C   H'0006E13B   H'00000020
+            .FLUSHH_CONST                              H'0006E13C   H'0006E1BB   H'00000080
+            .CLUSTERIC_CONST                           H'0006E1BC   H'0006E253   H'00000098
+            .PWRDIST_CONST                             H'0006E254   H'0006E26B   H'00000018
+            .PWRIN_CONST                               H'0006E26C   H'0006E29B   H'00000030
+            .PWHS_CONST                                H'0006E29C   H'0006E37F   H'000000E4
+            .CDD_EXS_CONST                             H'0006E380   H'0006E417   H'00000098
+            .GPT_CONST                                 H'0006E418   H'0006E55F   H'00000148
+            .MCU_CONST                                 H'0006E560   H'0006E7DB   H'0000027C
+            .WDG_CONST                                 H'0006E7DC   H'0006E7FF   H'00000024
+            .CORTST_CONST                              H'0006E800   H'0006E801   H'00000002
+            .FLSTST_CONST                              H'0006E804   H'0006E847   H'00000044
+            .RAMTST_CONST                              H'0006E848   H'0006E867   H'00000020
+            .FLS_CONST                                 H'0006E868   H'0006E993   H'0000012C
+            .CAN_CONST                                 H'0006E994   H'0006ECE6   H'00000353
+            .SPI_CONST                                 H'0006ECE8   H'0006F06B   H'00000384
+            .ADC_CONST                                 H'0006F06C   H'0006F30F   H'000002A4
+            .PORT_CONST                                H'0006F310   H'000705E7   H'000012D8
+            .DIO_CONST                                 H'000705E8   H'0007073F   H'00000158
+            .PWM_CONST                                 H'00070740   H'000709A3   H'00000264
+            .ICU_CONST                                 H'000709A4   H'00070A77   H'000000D4
+            .LIN_CONST                                 H'00070A78   H'00070AAF   H'00000038
+            .rosdata                                   H'00070AB0   H'00070FE7   H'00000538   Error *2
+            .romsdata_cpy_start                        H'00070FE8   H'--------   H'00000000
+            .D_SDATA                                   H'00070FE8   H'00071088   H'000000A1   Error *2
+            .D_APS_VAR_INIT                            H'0007108C   H'--------   H'00000000
+            .D_MR_VAR_INIT                             H'0007108C   H'--------   H'00000000
+            .D_FH_VAR_INIT                             H'0007108C   H'--------   H'00000000
+            .D_WR_VAR_INIT                             H'0007108C   H'--------   H'00000000
+            .D_DL_VAR_INIT                             H'0007108C   H'--------   H'00000000
+            .D_APLOS_VAR_INIT                          H'0007108C   H'--------   H'00000000
+            .D_CMNPKG_VAR_INIT                         H'0007108C   H'--------   H'00000000
+            .D_PAL_VAR_INIT                            H'0007108C   H'--------   H'00000000
+            .D_NWS_VAR_INIT                            H'0007108C   H'--------   H'00000000
+            .D_SAS_VAR_INIT                            H'0007108C   H'--------   H'00000000
+            .D_NVS_VAR_INIT                            H'0007108C   H'--------   H'00000000
+            .D_SYSS_VAR_INIT                           H'0007108C   H'--------   H'00000000
+            .D_RTE_VAR_INIT                            H'0007108C   H'0007112C   H'000000A1
+            .D_E2E_VAR_INIT                            H'00071130   H'--------   H'00000000
+            .D_CRC_VAR_INIT                            H'00071130   H'--------   H'00000000
+            .D_BSWM_VAR_INIT                           H'00071130   H'--------   H'00000000
+            .D_ECUM_VAR_INIT                           H'00071130   H'--------   H'00000000
+            .D_WDGM_VAR_INIT                           H'00071130   H'00071133   H'00000004
+            .D_WDGIF_VAR_INIT                          H'00071134   H'--------   H'00000000
+            .D_DCM_VAR_INIT                            H'00071134   H'00071134   H'00000001
+            .D_DEM_VAR_INIT                            H'00071138   H'00071159   H'00000022
+            .D_DET_VAR_INIT                            H'0007115C   H'0007115C   H'00000001
+            .D_FIM_VAR_INIT                            H'00071160   H'00071163   H'00000004
+            .D_NVM_VAR_INIT                            H'00071164   H'--------   H'00000000
+            .D_MEMIF_VAR_INIT                          H'00071164   H'--------   H'00000000
+            .D_FEE_VAR_INIT                            H'00071164   H'--------   H'00000000
+            .D_CANTP_VAR_INIT                          H'00071164   H'00071164   H'00000001
+            .D_PDUR_VAR_INIT                           H'00071168   H'--------   H'00000000
+            .D_COM_VAR_INIT                            H'00071168   H'--------   H'00000000
+            .D_COMM_VAR_INIT                           H'00071168   H'--------   H'00000000
+            .D_CANSM_VAR_INIT                          H'00071168   H'00071168   H'00000001
+            .D_CANNM_VAR_INIT                          H'0007116C   H'--------   H'00000000
+            .D_NM_VAR_INIT                             H'0007116C   H'--------   H'00000000
+            .D_CANIF_VAR_INIT                          H'0007116C   H'--------   H'00000000
+            .D_PIO_VAR_INIT                            H'0007116C   H'--------   H'00000000
+            .D_ADI_VAR_INIT                            H'0007116C   H'--------   H'00000000
+            .D_LINIF_VAR_INIT                          H'0007116C   H'--------   H'00000000
+            .D_LINSM_VAR_INIT                          H'0007116C   H'0007116C   H'00000001
+            .D_CDD_EXAUTOSAR_VAR_INIT                  H'00071170   H'--------   H'00000000
+            .D_WDGS_VAR_INIT                           H'00071170   H'--------   H'00000000
+            .D_DMA_VAR_INIT                            H'00071170   H'--------   H'00000000
+            .D_STARTUPS_VAR_INIT                       H'00071170   H'--------   H'00000000
+            .D_SLPS_VAR_INIT                           H'00071170   H'--------   H'00000000
+            .D_MEMS_VAR_INIT                           H'00071170   H'--------   H'00000000
+            .D_ADDRV_VAR_INIT                          H'00071170   H'--------   H'00000000
+            .D_PORTDRV_VAR_INIT                        H'00071170   H'--------   H'00000000
+            .D_MTRS_VAR_INIT                           H'00071170   H'--------   H'00000000
+            .D_SWITCH_VAR_INIT                         H'00071170   H'--------   H'00000000
+            .D_CDDMAIN_VAR_INIT                        H'00071170   H'--------   H'00000000
+            .D_CDD_TRCVS_VAR_INIT                      H'00071170   H'00071172   H'00000003
+            .D_MIRM_VAR_INIT                           H'00071174   H'--------   H'00000000
+            .D_PWSW_VAR_INIT                           H'00071174   H'--------   H'00000000
+            .D_PWMDRV_VAR_INIT                         H'00071174   H'--------   H'00000000
+            .D_LED_VAR_INIT                            H'00071174   H'--------   H'00000000
+            .D_DBGS_VAR_INIT                           H'00071174   H'--------   H'00000000
+            .D_FLUSHH_VAR_INIT                         H'00071174   H'--------   H'00000000
+            .D_CLUSTERIC_VAR_INIT                      H'00071174   H'--------   H'00000000
+            .D_PWRDIST_VAR_INIT                        H'00071174   H'--------   H'00000000
+            .D_PWRIN_VAR_INIT                          H'00071174   H'--------   H'00000000
+            .D_PWHS_VAR_INIT                           H'00071174   H'--------   H'00000000
+            .D_CDD_EXS_VAR_INIT                        H'00071174   H'--------   H'00000000
+            .D_GPT_VAR_INIT                            H'00071174   H'0007117B   H'00000008
+            .D_MCU_VAR_INIT                            H'0007117C   H'0007117C   H'00000001
+            .D_WDG_VAR_INIT                            H'00071180   H'00071187   H'00000008
+            .D_CORTST_VAR_INIT                         H'00071188   H'--------   H'00000000
+            .D_FLSTST_VAR_INIT                         H'00071188   H'--------   H'00000000
+            .D_RAMTST_VAR_INIT                         H'00071188   H'0007118F   H'00000008
+            .D_FLS_VAR_INIT                            H'00071190   H'000711A3   H'00000014
+            .D_CAN_VAR_INIT                            H'000711A4   H'000711A4   H'00000001
+            .D_SPI_VAR_INIT                            H'000711A8   H'00072957   H'000017B0
+            .D_ADC_VAR_INIT                            H'00072958   H'--------   H'00000000
+            .D_PORT_VAR_INIT                           H'00072958   H'--------   H'00000000
+            .D_DIO_VAR_INIT                            H'00072958   H'--------   H'00000000
+            .D_PWM_VAR_INIT                            H'00072958   H'--------   H'00000000
+            .D_ICU_VAR_INIT                            H'00072958   H'--------   H'00000000
+            .D_LIN_VAR_INIT                            H'00072958   H'00072958   H'00000001
+            .romsdata_cpy_end                          H'0007295C   H'--------   H'00000000
+            .romsdata_cpy_start_r                      H'0007295C   H'--------   H'00000000
+            .D_BSWM_VAR_POWER_ON_INIT                  H'0007295C   H'--------   H'00000000
+            .D_NVM_VAR_POWER_ON_INIT                   H'0007295C   H'0007295F   H'00000004
+            .D_FEE_VAR_POWER_ON_INIT                   H'00072960   H'--------   H'00000000
+            .D_COM_VAR_POWER_ON_INIT                   H'00072960   H'--------   H'00000000
+            .D_COMM_VAR_POWER_ON_INIT                  H'00072960   H'00072978   H'00000019
+            .D_CANNM_VAR_POWER_ON_INIT                 H'0007297C   H'0007297C   H'00000001
+            .D_NM_VAR_POWER_ON_INIT                    H'00072980   H'00072980   H'00000001
+            .D_ICU_VAR_POWER_ON_INIT                   H'00072984   H'--------   H'00000000
+            .D_FLS_VAR_POWER_ON_INIT                   H'00072984   H'--------   H'00000000
+            .D_CAN_VAR_POWER_ON_INIT                   H'00072984   H'--------   H'00000000
+            .romsdata_cpy_end_r                        H'00072984   H'--------   H'00000000
+            .rosda_end                                 H'00072984   H'--------   H'00000000
+            .CONST_DATA_END                            H'00230F80   H'--------   H'00000000
+========================================================================================================
+MEMBLOCK_APL_CODE                                      H'00230F80   H'003FFEFF   H'0005188C   H'0017D6F4
+            --------------------------------------------------------------------------------------------
+            .APLCODE_ROM_TOP                           H'00230F80   H'--------   H'00000000
+            .APS_CODE                                  H'00230F80   H'00231893   H'00000914
+            .MR_CODE                                   H'00231894   H'002343A7   H'00002B14
+            .FH_CODE                                   H'002343A8   H'00235A0B   H'00001664
+            .WR_CODE                                   H'00235A0C   H'0023F067   H'0000965C
+            .DL_CODE                                   H'0023F068   H'0024183F   H'000027D8
+            .APLOS_CODE                                H'00241840   H'00241C5D   H'0000041E
+            .CMNPKG_CODE                               H'00241C60   H'--------   H'00000000
+            .PAL_CODE                                  H'00241C60   H'--------   H'00000000
+            .NWS_CODE                                  H'00241C60   H'00243107   H'000014A8
+            .SAS_CODE                                  H'00243108   H'00243C4F   H'00000B48
+            .NVS_CODE                                  H'00243C50   H'002443EB   H'0000079C
+            .SYSS_CODE                                 H'002443EC   H'0024445F   H'00000074
+            .RTE_CODE                                  H'00244460   H'00248929   H'000044CA
+            .E2E_CODE                                  H'0024892C   H'--------   H'00000000
+            .CRC_CODE                                  H'0024892C   H'00248B03   H'000001D8
+            .OS_CODE                                   H'00248B04   H'002510A7   H'000085A4
+            .OS_ERRORHOOK_CODE                         H'002510A8   H'002510B5   H'0000000E
+            .OS_OS_COREINITHOOK_CODE                   H'002510B8   H'--------   H'00000000
+            .OS_SHUTDOWNHOOK_CODE                      H'002510B8   H'002510BB   H'00000004
+            .OS_STARTUPHOOK_CODE                       H'002510BC   H'002510C5   H'0000000A
+            .OS_CanIsrWakeup_0_CODE                    H'002510C8   H'--------   H'00000000
+            .OS_CanIsrWakeup_1_CODE                    H'002510C8   H'--------   H'00000000
+            .OS_Cs_Task_CODE                           H'002510C8   H'--------   H'00000000
+            .OS_FlsTst_Task_CODE                       H'002510C8   H'002510DF   H'00000018
+            .OS_ICU_INTP10_CAT2_ISR_CODE               H'002510E0   H'--------   H'00000000
+            .OS_ICU_INTP12_CAT2_ISR_CODE               H'002510E0   H'--------   H'00000000
+            .OS_ICU_INTP14_CAT2_ISR_CODE               H'002510E0   H'--------   H'00000000
+            .OS_ICU_INTP19_CAT2_ISR_CODE               H'002510E0   H'--------   H'00000000
+            .OS_ICU_INTP20_CAT2_ISR_CODE               H'002510E0   H'--------   H'00000000
+            .OS_ICU_INTP6_CAT2_ISR_CODE                H'002510E0   H'--------   H'00000000
+            .OS_LinIsr_30_Rh850Rlin_31_0_CODE          H'002510E0   H'--------   H'00000000
+            .OS_Main_Task_CODE                         H'002510E0   H'--------   H'00000000
+            .OS_Mem_Task_CODE                          H'002510E0   H'--------   H'00000000
+            .OS_NextDRCK_user_CODE                     H'002510E0   H'--------   H'00000000
+            .OS_StartUp_Task_CODE                      H'002510E0   H'0025114F   H'00000070
+            .OS_WdgM_Task_CODE                         H'00251150   H'--------   H'00000000
+            .OS_f_vog_dma_interrupt_DMA02_CODE         H'00251150   H'--------   H'00000000
+            .OS_f_vog_dma_interrupt_DMA03_CODE         H'00251150   H'--------   H'00000000
+            .OS_f_vog_dma_interrupt_DMA04_CODE         H'00251150   H'--------   H'00000000
+            .OS_f_vog_dma_interrupt_DMA05_CODE         H'00251150   H'--------   H'00000000
+            .OS_f_vog_dma_interrupt_DMA06_CODE         H'00251150   H'--------   H'00000000
+            .OS_f_vog_dma_interrupt_DMA07_CODE         H'00251150   H'--------   H'00000000
+            .OS_f_vog_gpt_interrupt_tauj0i1_CODE       H'00251150   H'--------   H'00000000
+            .OS_f_vog_gpt_interrupt_tauj3i0_CODE       H'00251150   H'--------   H'00000000
+            .BSWM_CODE                                 H'00251150   H'00252947   H'000017F8
+            .ECUM_CODE                                 H'00252948   H'00253197   H'00000850
+            .WDGM_CODE                                 H'00253198   H'00253BA7   H'00000A10
+            .WDGIF_CODE                                H'00253BA8   H'00253C1F   H'00000078
+            .DCM_CODE                                  H'00253C20   H'0025A6BF   H'00006AA0
+            .DEM_CODE                                  H'0025A6C0   H'00260D3B   H'0000667C
+            .DET_CODE                                  H'00260D3C   H'00260D7F   H'00000044
+            .FIM_CODE                                  H'00260D80   H'0026133B   H'000005BC
+            .NVM_CODE                                  H'0026133C   H'00263377   H'0000203C
+            .MEMIF_CODE                                H'00263378   H'0026353B   H'000001C4
+            .FEE_CODE                                  H'0026353C   H'00266593   H'00003058
+            .CANTP_CODE                                H'00266594   H'0026760B   H'00001078
+            .PDUR_CODE                                 H'0026760C   H'00268567   H'00000F5C
+            .COM_CODE                                  H'00268568   H'0026B52F   H'00002FC8
+            .COMM_CODE                                 H'0026B530   H'0026BF8B   H'00000A5C
+            .CANSM_CODE                                H'0026BF8C   H'0026C6B3   H'00000728
+            .CANNM_CODE                                H'0026C6B4   H'0026CEF3   H'00000840
+            .NM_CODE                                   H'0026CEF4   H'0026D1DB   H'000002E8
+            .CANIF_CODE                                H'0026D1DC   H'0026DB1D   H'00000942
+            .PIO_CODE                                  H'0026DB20   H'--------   H'00000000
+            .ADI_CODE                                  H'0026DB20   H'--------   H'00000000
+            .VSTDLIB_CODE                              H'0026DB20   H'00270739   H'00002C1A
+            .LINIF_CODE                                H'0027073C   H'--------   H'00000000
+            .LINSM_CODE                                H'0027073C   H'00270ABF   H'00000384
+            .CDD_EXAUTOSAR_CODE                        H'00270AC0   H'00270B67   H'000000A8
+            .WDGS_CODE                                 H'00270B68   H'00270BAF   H'00000048
+            .DMA_CODE                                  H'00270BB0   H'--------   H'00000000
+            .STARTUPS_CODE                             H'00270BB0   H'00270C2F   H'00000080
+            .STUB_CODE                                 H'00270C30   H'00270C33   H'00000004
+            .SLPS_CODE                                 H'00270C34   H'00270E2B   H'000001F8
+            .MEMS_CODE                                 H'00270E2C   H'0027172B   H'00000900
+            .ADDRV_CODE                                H'0027172C   H'002718CF   H'000001A4
+            .PORTDRV_CODE                              H'002718D0   H'00271995   H'000000C6
+            .MTRS_CODE                                 H'00271998   H'--------   H'00000000
+            .SWITCH_CODE                               H'00271998   H'00271C0F   H'00000278
+            .CDDMAIN_CODE                              H'00271C10   H'00272157   H'00000548
+            .NDRCK_CODE                                H'00272158   H'002733A3   H'0000124C
+            .sect_pf_prg                               H'002733A4   H'002733AB   H'00000008
+            .CDD_MEASURES_CODE                         H'002733AC   H'002733FB   H'00000050
+            .CDD_TRCVS_CODE                            H'002733FC   H'002736EB   H'000002F0
+            .SLFTSTS_CODE                              H'002736EC   H'0027371F   H'00000034
+            .MIRM_CODE                                 H'00273720   H'0027391F   H'00000200
+            .PWSW_CODE                                 H'00273920   H'00273E07   H'000004E8
+            .PWMDRV_CODE                               H'00273E08   H'00273E5B   H'00000054
+            .LED_CODE                                  H'00273E5C   H'00273ED3   H'00000078
+            .DBGS_CODE                                 H'00273ED4   H'00273F4F   H'0000007C
+            .FLUSHH_CODE                               H'00273F50   H'002742A7   H'00000358
+            .CLUSTERIC_CODE                            H'002742A8   H'00274853   H'000005AC
+            .PWRDIST_CODE                              H'00274854   H'00274A47   H'000001F4
+            .PWRIN_CODE                                H'00274A48   H'00274CA7   H'00000260
+            .PWHS_CODE                                 H'00274CA8   H'002754AB   H'00000804
+            .CDD_EXS_CODE                              H'002754AC   H'0027559B   H'000000F0
+            .GPT_CODE                                  H'0027559C   H'0027680F   H'00001274
+            .MCU_CODE                                  H'00276810   H'00276BC7   H'000003B8
+            .WDG_CODE                                  H'00276BC8   H'00276E23   H'0000025C
+            .CORTST_CODE                               H'00276E24   H'00276EB3   H'00000090
+            .FLSTST_CODE                               H'00276EB4   H'00276F0B   H'00000058
+            .RAMTST_CODE                               H'00276F0C   H'00277039   H'0000012E
+            .FLS_CODE                                  H'00277040   H'00277EFB   H'00000EBC
+            .CAN_CODE                                  H'00277EFC   H'002797DF   H'000018E4
+            .SPI_CODE                                  H'002797E0   H'0027AF17   H'00001738
+            .ADC_CODE                                  H'0027AF18   H'0027B9E7   H'00000AD0
+            .PORT_CODE                                 H'0027B9E8   H'0027BF73   H'0000058C
+            .DIO_CODE                                  H'0027BF74   H'0027C2E7   H'00000374
+            .PWM_CODE                                  H'0027C2E8   H'0027D10B   H'00000E24
+            .ICU_CODE                                  H'0027D10C   H'0027D47F   H'00000374
+            .MCFD_CODE                                 H'0027D480   H'0027F4D7   H'00002058
+            .LIN_CODE                                  H'0027F4D8   H'0027FC59   H'00000782
+            .GHSLIB_CODE                               H'0027FC60   H'0027FF4B   H'000002EC
+            .text                                      H'0027FF4C   H'0028280B   H'000028C0   Error *2
+            .syscall                                   H'0028280C   H'--------   H'00000000
+            .secinfo                                   H'0028280C   H'--------   H'00000000
+            .APLCODE_ROM_END                           H'003FFF00   H'--------   H'00000000
+========================================================================================================
+MEMBLOCK_ROMCHECK                                      H'003FFF00   H'003FFFFF   H'00000000   H'00000100
+            --------------------------------------------------------------------------------------------
+            .FLSTST_CHKSUM                             H'003FFF00   H'--------   H'00000000
+========================================================================================================
+MEMBLOCK_LOCAL_RAM                                     H'FEBC0000   H'FEBFFFFF   H'0000A538   H'00035AC8
+            --------------------------------------------------------------------------------------------
+            .LRAM_TOP                                  H'FEBC0000   H'--------   H'00000000
+            .sda_start                                 H'FEBC0000   H'--------   H'00000000
+            .VAR_INIT_TOP                              H'FEBC0000   H'--------   H'00000000
+            .sdata_cpy_start                           H'FEBC0000   H'--------   H'00000000
+            .sdata                                     H'FEBC0000   H'FEBC00A0   H'000000A1   Error *2
+            .CMNPKG_VAR_INIT                           H'FEBC00A4   H'--------   H'00000000
+            .PAL_VAR_INIT                              H'FEBC00A4   H'--------   H'00000000
+            .NWS_VAR_INIT                              H'FEBC00A4   H'--------   H'00000000
+            .SAS_VAR_INIT                              H'FEBC00A4   H'--------   H'00000000
+            .NVS_VAR_INIT                              H'FEBC00A4   H'--------   H'00000000
+            .SYSS_VAR_INIT                             H'FEBC00A4   H'--------   H'00000000
+            .RTE_VAR_INIT                              H'FEBC00A4   H'FEBC0144   H'000000A1
+            .E2E_VAR_INIT                              H'FEBC0148   H'--------   H'00000000
+            .CRC_VAR_INIT                              H'FEBC0148   H'--------   H'00000000
+            .BSWM_VAR_INIT                             H'FEBC0148   H'--------   H'00000000
+            .ECUM_VAR_INIT                             H'FEBC0148   H'--------   H'00000000
+            .WDGM_VAR_INIT                             H'FEBC0148   H'FEBC014B   H'00000004
+            .WDGIF_VAR_INIT                            H'FEBC014C   H'--------   H'00000000
+            .DCM_VAR_INIT                              H'FEBC014C   H'FEBC014C   H'00000001
+            .DEM_VAR_INIT                              H'FEBC0150   H'FEBC0171   H'00000022
+            .DET_VAR_INIT                              H'FEBC0174   H'FEBC0174   H'00000001
+            .FIM_VAR_INIT                              H'FEBC0178   H'FEBC017B   H'00000004
+            .NVM_VAR_INIT                              H'FEBC017C   H'--------   H'00000000
+            .MEMIF_VAR_INIT                            H'FEBC017C   H'--------   H'00000000
+            .FEE_VAR_INIT                              H'FEBC017C   H'--------   H'00000000
+            .CANTP_VAR_INIT                            H'FEBC017C   H'FEBC017C   H'00000001
+            .PDUR_VAR_INIT                             H'FEBC0180   H'--------   H'00000000
+            .COM_VAR_INIT                              H'FEBC0180   H'--------   H'00000000
+            .COMM_VAR_INIT                             H'FEBC0180   H'--------   H'00000000
+            .CANSM_VAR_INIT                            H'FEBC0180   H'FEBC0180   H'00000001
+            .CANNM_VAR_INIT                            H'FEBC0184   H'--------   H'00000000
+            .NM_VAR_INIT                               H'FEBC0184   H'--------   H'00000000
+            .CANIF_VAR_INIT                            H'FEBC0184   H'--------   H'00000000
+            .CANTRCV_VAR_INIT                          H'FEBC0184   H'--------   H'00000000
+            .PIO_VAR_INIT                              H'FEBC0184   H'--------   H'00000000
+            .ADI_VAR_INIT                              H'FEBC0184   H'--------   H'00000000
+            .LINIF_VAR_INIT                            H'FEBC0184   H'--------   H'00000000
+            .LINSM_VAR_INIT                            H'FEBC0184   H'FEBC0184   H'00000001
+            .CDD_EXAUTOSAR_VAR_INIT                    H'FEBC0188   H'--------   H'00000000
+            .WDGS_VAR_INIT                             H'FEBC0188   H'--------   H'00000000
+            .DMA_VAR_INIT                              H'FEBC0188   H'--------   H'00000000
+            .STARTUPS_VAR_INIT                         H'FEBC0188   H'--------   H'00000000
+            .SLPS_VAR_INIT                             H'FEBC0188   H'--------   H'00000000
+            .MEMS_VAR_INIT                             H'FEBC0188   H'--------   H'00000000
+            .ADDRV_VAR_INIT                            H'FEBC0188   H'--------   H'00000000
+            .PORTDRV_VAR_INIT                          H'FEBC0188   H'--------   H'00000000
+            .MTRS_VAR_INIT                             H'FEBC0188   H'--------   H'00000000
+            .SWITCH_VAR_INIT                           H'FEBC0188   H'--------   H'00000000
+            .CDDMAIN_VAR_INIT                          H'FEBC0188   H'--------   H'00000000
+            .CDD_TRCVS_VAR_INIT                        H'FEBC0188   H'FEBC018A   H'00000003
+            .MIRM_VAR_INIT                             H'FEBC018C   H'--------   H'00000000
+            .PWSW_VAR_INIT                             H'FEBC018C   H'--------   H'00000000
+            .PWMDRV_VAR_INIT                           H'FEBC018C   H'--------   H'00000000
+            .LED_VAR_INIT                              H'FEBC018C   H'--------   H'00000000
+            .DBGS_VAR_INIT                             H'FEBC018C   H'--------   H'00000000
+            .FLUSHH_VAR_INIT                           H'FEBC018C   H'--------   H'00000000
+            .CLUSTERIC_VAR_INIT                        H'FEBC018C   H'--------   H'00000000
+            .PWRDIST_VAR_INIT                          H'FEBC018C   H'--------   H'00000000
+            .PWRIN_VAR_INIT                            H'FEBC018C   H'--------   H'00000000
+            .PWHS_VAR_INIT                             H'FEBC018C   H'--------   H'00000000
+            .CDD_EXS_VAR_INIT                          H'FEBC018C   H'--------   H'00000000
+            .GPT_VAR_INIT                              H'FEBC018C   H'FEBC0193   H'00000008
+            .MCU_VAR_INIT                              H'FEBC0194   H'FEBC0194   H'00000001
+            .WDG_VAR_INIT                              H'FEBC0198   H'FEBC019F   H'00000008
+            .CORTST_VAR_INIT                           H'FEBC01A0   H'--------   H'00000000
+            .FLSTST_VAR_INIT                           H'FEBC01A0   H'--------   H'00000000
+            .RAMTST_VAR_INIT                           H'FEBC01A0   H'FEBC01A7   H'00000008
+            .FLS_VAR_INIT                              H'FEBC01A8   H'FEBC01BB   H'00000014
+            .CAN_VAR_INIT                              H'FEBC01BC   H'FEBC01BC   H'00000001
+            .SPI_VAR_INIT                              H'FEBC01C0   H'FEBC196F   H'000017B0
+            .ADC_VAR_INIT                              H'FEBC1970   H'--------   H'00000000
+            .PORT_VAR_INIT                             H'FEBC1970   H'--------   H'00000000
+            .DIO_VAR_INIT                              H'FEBC1970   H'--------   H'00000000
+            .PWM_VAR_INIT                              H'FEBC1970   H'--------   H'00000000
+            .ICU_VAR_INIT                              H'FEBC1970   H'--------   H'00000000
+            .LIN_VAR_INIT                              H'FEBC1970   H'FEBC1970   H'00000001
+            .VAR_INIT_END                              H'FEBC1971   H'--------   H'00000000
+            .VAR_CLEARED_TOP                           H'FEBC1971   H'--------   H'00000000
+            .CMNPKG_VAR_CLEARED                        H'FEBC1974   H'--------   H'00000000
+            .PAL_VAR_CLEARED                           H'FEBC1974   H'--------   H'00000000
+            .NWS_VAR_CLEARED                           H'FEBC1974   H'FEBC1C65   H'000002F2
+            .SAS_VAR_CLEARED                           H'FEBC1C68   H'FEBC1D85   H'0000011E
+            .NVS_VAR_CLEARED                           H'FEBC1D88   H'FEBC1D98   H'00000011
+            .SYSS_VAR_CLEARED                          H'FEBC1D9C   H'FEBC1D9F   H'00000004
+            .RTE_VAR_CLEARED                           H'FEBC1DA0   H'--------   H'00000000
+            .E2E_VAR_CLEARED                           H'FEBC1DA0   H'--------   H'00000000
+            .CRC_VAR_CLEARED                           H'FEBC1DA0   H'--------   H'00000000
+            .BSWM_VAR_CLEARED                          H'FEBC1DA0   H'--------   H'00000000
+            .ECUM_VAR_CLEARED                          H'FEBC1DA0   H'--------   H'00000000
+            .WDGM_VAR_CLEARED                          H'FEBC1DA0   H'--------   H'00000000
+            .WDGIF_VAR_CLEARED                         H'FEBC1DA0   H'--------   H'00000000
+            .DCM_VAR_CLEARED                           H'FEBC1DA0   H'--------   H'00000000
+            .DEM_VAR_CLEARED                           H'FEBC1DA0   H'--------   H'00000000
+            .DET_VAR_CLEARED                           H'FEBC1DA0   H'--------   H'00000000
+            .FIM_VAR_CLEARED                           H'FEBC1DA0   H'--------   H'00000000
+            .NVM_VAR_CLEARED                           H'FEBC1DA0   H'--------   H'00000000
+            .MEMIF_VAR_CLEARED                         H'FEBC1DA0   H'--------   H'00000000
+            .FEE_VAR_CLEARED                           H'FEBC1DA0   H'--------   H'00000000
+            .CANTP_VAR_CLEARED                         H'FEBC1DA0   H'--------   H'00000000
+            .PDUR_VAR_CLEARED                          H'FEBC1DA0   H'--------   H'00000000
+            .COM_VAR_CLEARED                           H'FEBC1DA0   H'--------   H'00000000
+            .COMM_VAR_CLEARED                          H'FEBC1DA0   H'--------   H'00000000
+            .CANSM_VAR_CLEARED                         H'FEBC1DA0   H'--------   H'00000000
+            .CANNM_VAR_CLEARED                         H'FEBC1DA0   H'--------   H'00000000
+            .NM_VAR_CLEARED                            H'FEBC1DA0   H'--------   H'00000000
+            .CANIF_VAR_CLEARED                         H'FEBC1DA0   H'--------   H'00000000
+            .PIO_VAR_CLEARED                           H'FEBC1DA0   H'--------   H'00000000
+            .ADI_VAR_CLEARED                           H'FEBC1DA0   H'--------   H'00000000
+            .sect_pf_startup_sbss                      H'FEBC1DA0   H'--------   H'00000000
+            .CDD_EXAUTOSAR_VAR_CLEARED                 H'FEBC1DA0   H'--------   H'00000000
+            .WDGS_VAR_CLEARED                          H'FEBC1DA0   H'--------   H'00000000
+            .DMA_VAR_CLEARED                           H'FEBC1DA0   H'--------   H'00000000
+            .STUB_VAR_CLEARED                          H'FEBC1DA0   H'--------   H'00000000
+            .STARTUPS_VAR_CLEARED                      H'FEBC1DA0   H'FEBC1DA3   H'00000004
+            .SLPS_VAR_CLEARED                          H'FEBC1DA4   H'FEBC1DAC   H'00000009
+            .MEMS_VAR_CLEARED                          H'FEBC1DB0   H'FEBC1E3F   H'00000090
+            .ADDRV_VAR_CLEARED                         H'FEBC1E40   H'FEBC1E9B   H'0000005C
+            .PORTDRV_VAR_CLEARED                       H'FEBC1E9C   H'FEBC1EA7   H'0000000C
+            .MTRS_VAR_CLEARED                          H'FEBC1EA8   H'--------   H'00000000
+            .SWITCH_VAR_CLEARED                        H'FEBC1EA8   H'FEBC1EC3   H'0000001C
+            .CDDMAIN_VAR_CLEARED                       H'FEBC1EC4   H'FEBC1F03   H'00000040
+            .CDD_TRCVS_VAR_CLEARED                     H'FEBC1F04   H'--------   H'00000000
+            .NDRCK_VAR_CLEARED                         H'FEBC1F04   H'FEBC1FC1   H'000000BE
+            .SLFTSTS_VAR_CLEARED                       H'FEBC1FC4   H'--------   H'00000000
+            .MIRM_VAR_CLEARED                          H'FEBC1FC4   H'FEBC1FE3   H'00000020
+            .PWSW_VAR_CLEARED                          H'FEBC1FE4   H'FEBC2047   H'00000064
+            .PWMDRV_VAR_CLEARED                        H'FEBC2048   H'--------   H'00000000
+            .LED_VAR_CLEARED                           H'FEBC2048   H'--------   H'00000000
+            .DBGS_VAR_CLEARED                          H'FEBC2048   H'FEBC204B   H'00000004
+            .FLUSHH_VAR_CLEARED                        H'FEBC204C   H'FEBC2063   H'00000018
+            .CLUSTERIC_VAR_CLEARED                     H'FEBC2064   H'FEBC206A   H'00000007
+            .PWRDIST_VAR_CLEARED                       H'FEBC206C   H'FEBC207F   H'00000014
+            .PWRIN_VAR_CLEARED                         H'FEBC2080   H'FEBC209F   H'00000020
+            .PWHS_VAR_CLEARED                          H'FEBC20A0   H'FEBC210B   H'0000006C
+            .CDD_EXS_VAR_CLEARED                       H'FEBC210C   H'FEBC211F   H'00000014
+            .GPT_VAR_CLEARED                           H'FEBC2120   H'FEBC2123   H'00000004
+            .MCU_VAR_CLEARED                           H'FEBC2124   H'FEBC2127   H'00000004
+            .WDG_VAR_CLEARED                           H'FEBC2128   H'FEBC2135   H'0000000E
+            .CORTST_VAR_CLEARED                        H'FEBC2138   H'--------   H'00000000
+            .FLSTST_VAR_CLEARED                        H'FEBC2138   H'--------   H'00000000
+            .RAMTST_VAR_CLEARED                        H'FEBC2138   H'--------   H'00000000
+            .FLS_VAR_CLEARED                           H'FEBC2138   H'FEBC216B   H'00000034
+            .CAN_VAR_CLEARED                           H'FEBC216C   H'--------   H'00000000
+            .SPI_VAR_CLEARED                           H'FEBC216C   H'--------   H'00000000
+            .ADC_VAR_CLEARED                           H'FEBC216C   H'FEBC217F   H'00000014
+            .PORT_VAR_CLEARED                          H'FEBC2180   H'--------   H'00000000
+            .DIO_VAR_CLEARED                           H'FEBC2180   H'--------   H'00000000
+            .PWM_VAR_CLEARED                           H'FEBC2180   H'--------   H'00000000
+            .ICU_VAR_CLEARED                           H'FEBC2180   H'FEBC21DF   H'00000060
+            .MCFD_VAR_CLEARED                          H'FEBC21E0   H'FEBC221B   H'0000003C
+            .sbss                                      H'FEBC221C   H'FEBC2437   H'0000021C   Error *2
+            .VAR_CLEARED_END                           H'FEBC2438   H'--------   H'00000000
+            .OS_STACK_TOP                              H'FEBC2438   H'--------   H'00000000
+            .OS_STACK_OSCORE0_ERROR_VAR_NOINIT         H'FEBC2438   H'FEBC2537   H'00000100
+            .OS_STACK_OSCORE0_INIT_VAR_NOINIT          H'FEBC2538   H'FEBC2637   H'00000100
+            .OS_STACK_OSCORE0_ISR_CORE_VAR_NOINIT      H'FEBC2638   H'FEBC2A37   H'00000400
+            .OS_STACK_OSCORE0_KERNEL_VAR_NOINIT        H'FEBC2A38   H'FEBC3237   H'00000800
+            .OS_STACK_OSCORE0_SHUTDOWN_VAR_NOINIT      H'FEBC3238   H'FEBC3337   H'00000100
+            .OS_STACK_OSCORE0_STARTUP_VAR_NOINIT       H'FEBC3338   H'FEBC3437   H'00000100
+            .OS_STACK_OSCORE0_TASK_PRIO1_VAR_NOINIT    H'FEBC3438   H'FEBC3537   H'00000100
+            .OS_STACK_OSCORE0_TASK_PRIO10_VAR_NOINIT   H'FEBC3538   H'FEBC4537   H'00001000
+            .OS_STACK_OSCORE0_TASK_PRIO14_VAR_NOINIT   H'FEBC4538   H'FEBC4937   H'00000400
+            .OS_STACK_OSCORE0_TASK_PRIO15_VAR_NOINIT   H'FEBC4938   H'FEBC6137   H'00001800
+            .OS_STACK_OSCORE0_TASK_PRIO4_VAR_NOINIT    H'FEBC6138   H'FEBC7937   H'00001800
+            .OS_STACK_OSCORE0_TASK_PRIO4294967295_VAR_NOINIT H'FEBC7938   H'FEBC7D37   H'00000400
+            .OS_STACK_OSCORE0_TASK_PRIO8_VAR_NOINIT    H'FEBC7D38   H'FEBC9537   H'00001800
+            .OS_STACK_END                              H'FEBC9538   H'--------   H'00000000
+            .stack                                     H'FEBC9538   H'FEBCA537   H'00001000
+            .sect_stack_start                          H'FEBCA538   H'--------   H'00000000
+            .tdata                                     H'FEBCA538   H'--------   H'00000000
+            .LRAM_END                                  H'FEC00000   H'--------   H'00000000
+========================================================================================================
+MEMBLOCK_GLOBAL_RAM_A                                  H'FEEE8000   H'FEEFFFFF   H'00000985   H'0001767B
+            --------------------------------------------------------------------------------------------
+            .GRAM_A_TOP                                H'FEEE8000   H'--------   H'00000000
+            .APS_VAR_CLEARED                           H'FEEE8000   H'FEEE821F   H'00000220
+            .MR_VAR_CLEARED                            H'FEEE8220   H'FEEE8308   H'000000E9
+            .FH_VAR_CLEARED                            H'FEEE830C   H'FEEE83D3   H'000000C8
+            .WR_VAR_CLEARED                            H'FEEE83D4   H'FEEE87FA   H'00000427
+            .DL_VAR_CLEARED                            H'FEEE87FC   H'FEEE896B   H'00000170
+            .APLOS_VAR_CLEARED                         H'FEEE896C   H'FEEE8984   H'00000019
+            .APS_VAR_INIT                              H'FEEE8988   H'--------   H'00000000
+            .MR_VAR_INIT                               H'FEEE8988   H'--------   H'00000000
+            .FH_VAR_INIT                               H'FEEE8988   H'--------   H'00000000
+            .WR_VAR_INIT                               H'FEEE8988   H'--------   H'00000000
+            .DL_VAR_INIT                               H'FEEE8988   H'--------   H'00000000
+            .APLOS_VAR_INIT                            H'FEEE8988   H'--------   H'00000000
+            .GRAM_A_END                                H'FEF00000   H'--------   H'00000000
+========================================================================================================
+MEMBLOCK_RRAM_NOCLR_CPU1                               H'FEF00000   H'FEF0FFFF   H'00010000   H'00000000
+            --------------------------------------------------------------------------------------------
+            .RRAM_TOP                                  H'FEF00000   H'--------   H'00000000
+            .soft_ram_noclr_start                      H'FEF00000   H'--------   H'00000000
+            .sdata_cpy_start_r                         H'FEF00000   H'--------   H'00000000
+            .BSWM_VAR_POWER_ON_INIT                    H'FEF00000   H'--------   H'00000000
+            .NVM_VAR_POWER_ON_INIT                     H'FEF00000   H'FEF00003   H'00000004
+            .FEE_VAR_POWER_ON_INIT                     H'FEF00004   H'--------   H'00000000
+            .COM_VAR_POWER_ON_INIT                     H'FEF00004   H'--------   H'00000000
+            .COMM_VAR_POWER_ON_INIT                    H'FEF00004   H'FEF0001C   H'00000019
+            .CANNM_VAR_POWER_ON_INIT                   H'FEF00020   H'FEF00020   H'00000001
+            .NM_VAR_POWER_ON_INIT                      H'FEF00024   H'FEF00024   H'00000001
+            .ICU_VAR_POWER_ON_INIT                     H'FEF00028   H'--------   H'00000000
+            .FLS_VAR_POWER_ON_INIT                     H'FEF00028   H'--------   H'00000000
+            .CAN_VAR_POWER_ON_INIT                     H'FEF00028   H'--------   H'00000000
+            .sdata_cpy_end_r                           H'FEF00028   H'--------   H'00000000
+            .sbss_start_r                              H'FEF00028   H'--------   H'00000000
+            .NVRAM_DATA                                H'FEF00028   H'FEF0010B   H'000000E4
+            .APS_VAR_NO_INIT                           H'FEF0010C   H'--------   H'00000000
+            .MR_VAR_NO_INIT                            H'FEF0010C   H'--------   H'00000000
+            .FH_VAR_NO_INIT                            H'FEF0010C   H'--------   H'00000000
+            .WR_VAR_NO_INIT                            H'FEF0010C   H'--------   H'00000000
+            .DL_VAR_NO_INIT                            H'FEF0010C   H'--------   H'00000000
+            .APLOS_VAR_NO_INIT                         H'FEF0010C   H'--------   H'00000000
+            .RTE_VAR_NO_INIT                           H'FEF0010C   H'FEF00219   H'0000010E
+            .OS_CORE0_VAR_FAST_NOINIT                  H'FEF00220   H'FEF00D47   H'00000B28
+            .OS_BARRIER_CORE0_VAR_FAST_NOCACHE_NOINIT  H'FEF00D48   H'FEF00D4F   H'00000008
+            .OS_VAR_FAST_NOCACHE_NOINIT                H'FEF00D50   H'FEF00D5B   H'0000000C
+            .OS_CORESTATUS_CORE0_VAR_FAST_NOCACHE_NOINIT H'FEF00D5C   H'FEF00D6F   H'00000014
+            .BSWM_VAR_NO_INIT                          H'FEF00D70   H'FEF00E5C   H'000000ED
+            .ECUM_VAR_NO_INIT                          H'FEF00E60   H'FEF00E79   H'0000001A
+            .WDGM_VAR_NO_INIT                          H'FEF00E7C   H'FEF00F37   H'000000BC
+            .DCM_VAR_NO_INIT                           H'FEF00F38   H'FEF020A0   H'00001169
+            .PDUR_VAR_NO_INIT                          H'FEF020A4   H'FEF020A5   H'00000002
+            .COM_VAR_NO_INIT                           H'FEF020A8   H'FEF023E6   H'0000033F
+            .COMM_VAR_NO_INIT                          H'FEF023E8   H'FEF02415   H'0000002E
+            .CANSM_VAR_NO_INIT                         H'FEF02418   H'FEF0243F   H'00000028
+            .CANNM_VAR_NO_INIT                         H'FEF02440   H'FEF02483   H'00000044
+            .NM_VAR_NO_INIT                            H'FEF02484   H'FEF02485   H'00000002
+            .CANIF_VAR_NO_INIT                         H'FEF02488   H'FEF024CF   H'00000048
+            .DEM_VAR_NO_INIT                           H'FEF024D0   H'FEF0275D   H'0000028E
+            .FIM_VAR_NO_INIT                           H'FEF02760   H'FEF0276E   H'0000000F
+            .DET_VAR_NO_INIT                           H'FEF02770   H'--------   H'00000000
+            .NVM_VAR_NO_INIT                           H'FEF02770   H'FEF02A2F   H'000002C0
+            .FEE_VAR_NO_INIT                           H'FEF02A30   H'--------   H'00000000
+            .CANTP_VAR_NO_INIT                         H'FEF02A30   H'FEF02A6F   H'00000040
+            .LINIF_VAR_NO_INIT                         H'FEF02A70   H'--------   H'00000000
+            .LINSM_VAR_NO_INIT                         H'FEF02A70   H'FEF02A76   H'00000007
+            .SLPS_VAR_NO_INIT                          H'FEF02A78   H'--------   H'00000000
+            .MEMS_VAR_NO_INIT                          H'FEF02A78   H'--------   H'00000000
+            .CDD_EXAUTOSAR_VAR_NO_INIT                 H'FEF02A78   H'--------   H'00000000
+            .ADDRV_VAR_NO_INIT                         H'FEF02A78   H'--------   H'00000000
+            .PORTDRV_VAR_NO_INIT                       H'FEF02A78   H'--------   H'00000000
+            .MTRS_VAR_NO_INIT                          H'FEF02A78   H'--------   H'00000000
+            .SWITCH_VAR_NO_INIT                        H'FEF02A78   H'FEF02B37   H'000000C0
+            .CDDMAIN_VAR_NO_INIT                       H'FEF02B38   H'--------   H'00000000
+            .CDD_TRCVS_VAR_NO_INIT                     H'FEF02B38   H'--------   H'00000000
+            .MIRM_VAR_NO_INIT                          H'FEF02B38   H'--------   H'00000000
+            .PWSW_VAR_NO_INIT                          H'FEF02B38   H'--------   H'00000000
+            .PWMDRV_VAR_NO_INIT                        H'FEF02B38   H'--------   H'00000000
+            .LED_VAR_NO_INIT                           H'FEF02B38   H'--------   H'00000000
+            .DBGS_VAR_NO_INIT                          H'FEF02B38   H'--------   H'00000000
+            .FLUSHH_VAR_NO_INIT                        H'FEF02B38   H'--------   H'00000000
+            .CLUSTERIC_VAR_NO_INIT                     H'FEF02B38   H'--------   H'00000000
+            .PWRDIST_VAR_NO_INIT                       H'FEF02B38   H'--------   H'00000000
+            .PWRIN_VAR_NO_INIT                         H'FEF02B38   H'--------   H'00000000
+            .PWHS_VAR_NO_INIT                          H'FEF02B38   H'--------   H'00000000
+            .ICU_VAR_NO_INIT                           H'FEF02B38   H'--------   H'00000000
+            .CORTST_VAR_NO_INIT                        H'FEF02B38   H'FEF02B3B   H'00000004
+            .FLSTST_VAR_NO_INIT                        H'FEF02B3C   H'FEF02B43   H'00000008
+            .FLS_VAR_NO_INIT                           H'FEF02B44   H'--------   H'00000000
+            .CAN_VAR_NO_INIT                           H'FEF02B44   H'FEF02CBB   H'00000178
+            .LIN_VAR_NO_INIT                           H'FEF02CBC   H'FEF02CC7   H'0000000C
+            .SAS_VAR_POWER_ON_CLEARED                  H'FEF02CC8   H'--------   H'00000000
+            .NVM_VAR_POWER_ON_CLEARED                  H'FEF02CC8   H'FEF02CFF   H'00000038
+            .FEE_VAR_POWER_ON_CLEARED                  H'FEF02D00   H'FEF04DF3   H'000020F4
+            .MEMS_VAR_POWER_ON_CLEARED                 H'FEF04DF4   H'FEF04DF5   H'00000002
+            .NDRCK_VAR_POWER_ON_CLEARED                H'FEF04DF8   H'FEF04F20   H'00000129
+            .FLS_VAR_POWER_ON_CLEARED                  H'FEF04F24   H'--------   H'00000000
+            .ICU_VAR_POWER_ON_CLEARED                  H'FEF04F24   H'--------   H'00000000
+            .sect_noclr_sbss                           H'FEF04F24   H'FEF0FFFB   H'0000B0D8
+            .sbss_end_r                                H'FEF0FFFC   H'--------   H'00000000
+            .soft_ram_noclr_end                        H'FEF0FFFC   H'--------   H'00000000
+            .sect_noclr_clr_check_pattern              H'FEF0FFFC   H'FEF0FFFF   H'00000004
+            .sda_end                                   H'FEF10000   H'--------   H'00000000
+            .RRAM_END                                  H'FEF10000   H'--------   H'00000000
+            .data                                      H'FEF10000   H'--------   H'00000000   Error *1
+            .bss                                       H'FEF10000   H'--------   H'00000000   Error *1
+========================================================================================================
+(*) : No Calculation
+
+[ MEMORY(ROM/RAM) Usage Calculation Result ]
+============================================================================================================
+ROM_CAL           free :     6408 byte ( 78.22 %)    used :     1784 byte ( 21.78 %)    size :     8192 byte
+ROM_APL           free :  3417517 byte ( 89.39 %)    used :   405587 byte ( 10.61 %)    size :  3823104 byte
+LRAM              free :   219848 byte ( 83.87 %)    used :    42296 byte ( 16.13 %)    size :   262144 byte
+GRAM              free :    95867 byte ( 97.52 %)    used :     2437 byte (  2.48 %)    size :    98304 byte
+RRAM              free :        0 byte (  0.00 %)    used :    65536 byte (100.00 %)    size :    65536 byte
+------------------------------------------------------------------------------------------------------------
+CAL               free :     6408 byte ( 78.22 %)    used :     1784 byte ( 21.78 %)    size :     8192 byte
+APL               free :  3417517 byte ( 89.39 %)    used :   405587 byte ( 10.61 %)    size :  3823104 byte
+ROM               free :  3423925 byte ( 89.37 %)    used :   407371 byte ( 10.63 %)    size :  3831296 byte
+RAM               free :   315715 byte ( 74.11 %)    used :   110269 byte ( 25.89 %)    size :   425984 byte
+============================================================================================================
+
+[ MEMORY(FUNCTION) Usage Calculation Result ]
+===========================================================================================================
+                    ROM_CAL         ROM_APL         LRAM            GRAM            RRAM                   
+-----------------------------------------------------------------------------------------------------------
+OTHER               32              34376           33024           0               45276           byte
+DEFSEC              0               11929           701             0               0               byte
+LIB                 0               748             0               0               0               byte
+APLOS               0               1626            0               25              0               byte
+DL                  0               10200           0               368             0               byte
+FH                  19              5750            0               200             0               byte
+MR                  1012            11043           0               233             0               byte
+WR                  720             38568           0               1063            0               byte
+APS                 0               2324            0               544             0               byte
+BSW                 0               172806          47              0               10340           byte
+CDD                 0               25753           893             0               192             byte
+MCAL                0               58668           6361            0               9419            byte
+MIDDLE              0               13806           1061            0               0               byte
+PAL                 0               0               0               0               0               byte
+RTE                 0               17774           161             0               270             byte
+-----------------------------------------------------------------------------------------------------------
+Total Use Size      1783            405371          42248           2433            65497           byte
+Total Size          8192            3823104         262144          98304           65536           byte
+Use Rate            21.77 %         10.60 %         16.12 %         2.47 %          99.94 %         percent
+===========================================================================================================
+
+[ Error Message Contents ]
+*1 : Section name not found from *.ld file.
+*2 : Prohibited Section is used.

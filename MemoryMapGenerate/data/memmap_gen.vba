@@ -16,9 +16,7 @@ Const LENGTH = ", LENGTH = "
 Const EQUAL = " = "
 Const SHEETNAME_SETTING = "設定"
 Const SHEETNAME_MEMORYMAP = "メモリマップ定義"
-' Const SHEETNAME_CONST = "定数設定"
-' Const SHEETNAME_LDFILELIST = "LDファイルリスト"
-' Const SHEETNAME_OUTSETTING = "任意出力設定"
+Const SHEETNAME_OUTSETTING = "ユーザー定義シンボル"
 Const SHEETNAME_MEMORYPLACEMENT = "メモリ配置図"
 Const SHEETNAME_RIVISION = "改訂履歴"
 Const SYMBOL_for_MICROSAR_OS_1 = "    /* ------ SYMBOL for MICROSAR OS ------ */"              'MICROSAR OSのためのシンボル
@@ -35,7 +33,7 @@ Const SECTION_CATEGORY_POSTFIX = " ------*/"
 Const INDENTS_MEMORY2ORIGIN = 20        'LDファイルの視認性を向上させるために、各ブロックにインデントをつけている
 Const INDENTS_CONST2VALUE = 15          '現在の実装ではインデント数＝文字数の制約になっている
 Const INDENTS_SECTION2ELEMENT1 = 30     'もし、出力された文字列の一部が上書きされているなどがあれば、
-Const INDENTS_ELEMENT32MEMORY = 40      'これらのインデントの値を修正することで問題が解消されるかもしれない
+Const INDENTS_ELEMENT32MEMORY = 41      'これらのインデントの値を修正することで問題が解消されるかもしれない
 Const INDENTS_MEMORY2COMMENT = 15       'ブラッシュアップ：定数に依存しないインデントの付け方
 Const INDENTS_FORMULA2LEFT = 12
 Const INDENTS_FORMULA2RIGHT = 18
@@ -68,10 +66,10 @@ Const TABLE_DEFAULT_SECTION_CHECK_SETTING_TOP = "[DEFAULT_SECTION_CHECK_SETTING_
 Const TABLE_DEFAULT_SECTION_CHECK_SETTING_END = "[DEFAULT_SECTION_CHECK_SETTING_END]"
 Const TABLE_COMPILER_AUTO_GENERATE_SECTION_TOP = "[COMPILER_AUTO_GENERATE_SECTION_TOP]"
 Const TABLE_COMPILER_AUTO_GENERATE_SECTION_END = "[COMPILER_AUTO_GENERATE_SECTION_END]"
-Const TABLE_MEMORY_ROMRAM_CALC_FORMULA_TOP = "[MEMORY_ROMRAM_CALC_FORMULA_TOP]"
-Const TABLE_MEMORY_ROMRAM_CALC_FORMULA_END = "[MEMORY_ROMRAM_CALC_FORMULA_END]"
-Const TABLE_MEMORY_FUNCTION_CALC_FORMULA_TOP = "[MEMORY_FUNCTION_CALC_FORMULA_TOP]"
-Const TABLE_MEMORY_FUNCTION_CALC_FORMULA_END = "[MEMORY_FUNCTION_CALC_FORMULA_END]"
+Const TABLE_MEMORY_ROMRAM_CALC_FORMULA_TOP = "[MEMORY_CATEGORY_TOP]"
+Const TABLE_MEMORY_ROMRAM_CALC_FORMULA_END = "[MEMORY_CATEGORY_END]"
+Const TABLE_MEMORY_FUNCTION_CALC_FORMULA_TOP = "[APPLICATION_CATEGORY_TOP]"
+Const TABLE_MEMORY_FUNCTION_CALC_FORMULA_END = "[APPLICATION_CATEGORY_END]"
 
 Const COLUMN_DELETE_RANGE = "D:Z"
 
@@ -127,22 +125,13 @@ End Type
 ' *********************************************
 Private Sheet_Setting      As Worksheet '設定シートのオブジェクト
 Private Sheet_MemoryMap    As Worksheet 'メモリマップ定義シートのオブジェクト
-' Private Sheet_Const        As Worksheet '定数設定シートのオブジェクト
-' Private Sheet_LDFileList   As Worksheet 'ldファイルリストシートのオブジェクト
-' Private Sheet_OutSetting   As Worksheet '任意出力設定シートのオブジェクト
+Private Sheet_OutSetting   As Worksheet '任意出力設定シートのオブジェクト
 Private Sheet_Addr_Spese   As Worksheet 'アドレス空間シートのオブジェクト
 Private Sheet_MemoryPlace  As Worksheet 'メモリ配置シートのオブジェクト
 Private Sheet_Revision     As Worksheet '改訂履歴シートのオブジェクト
 
 Dim Rowindex_TopLDFileID                '設定シートのldファイル入力エリア開始行インデックス
 Dim RowIndex_TopConst                   '設定シートの固定領域入力エリア開始行インデックス
-Dim RowIndex_TopDefSymbol               '設定シートのシンボル定義入力エリア開始行インデックス
-Dim ColIndex_SettingLDFileID            '設定シートのldファイルID列インデックス
-Dim ColIndex_ConstName                  '設定シートの固定領域ラベル列インデックス
-Dim ColIndex_ConstData                  '設定シートの固定領域サイズ列インデックス
-Dim ColIndex_DefSymbolID                '設定シートのシンボル定義「ID」列インデックス
-Dim ColIndex_DefSymbolBlock             '設定シートのシンボル定義「BLOCK」列インデックス
-Dim ColIndex_DefSymbolValue             '設定シートのシンボル定義「Setting Value」列インデックス
 
 Dim RowIndex_TopMemoryMap               'メモリマップ定義シート入力エリア開始行インデックス
 Dim Rowindex_EndRow                     'メモリマップ定義シートの最終行
@@ -157,18 +146,15 @@ Dim ColIndex_SectionStartExpression     'セクション開始アドレス（sta
 Dim ColIndex_SectionAttributes          'セクション属性（Attributes）列インデックス
 Dim ColIndex_SectionContents            'セクションオブジェクト配置（Contents）列インデックス
 Dim ColIndex_SectionCategory            'セクション種別列インデックス
-Dim ColIndex_SectionExMemoryCalcSetting 'メモリ容量算出除外設定列インデックス
 Dim ColIndex_Comment                    'コメント列インデックス
 
 Dim Error_Message_Text As String        'エラーメッセージに表示するテキスト
 
 Private Is_Fraud As Boolean             'フォーマット不正判定の変数(Trueの場合、不正とする)
 
-Private SectionList(600) As Section_STR 'セクションリスト　セクション名のリスト
+Private SectionList() As Section_STR    'セクションリスト　セクション名のリスト
                                         '一つの関数内でしか使用していないため、オート変数で宣言することも可能だが、
                                         'デバッグをやり易くするために、プロシージャレベルで宣言する
-                                        '動的に配列を定義する方法を忘れたため、エイヤで要素を300としている(300に意図はない)
-                                        'ブラッシュアップ：動的に宣言できる方法があれば修正してほしい
 
 Private Output_Memory   As String       '出力データ（メモリ）　メモリ部分に出力する文字列
 Private Output_Const    As String       '出力データ（固定領域）　固定領域部分に出力する文字列
@@ -200,7 +186,6 @@ Public Sub Main()
     Call Get_MemoryName         'メモリマップ定義シート：メモリ情報を読み込む
     
     If (Is_Fraud = False) Then  'フォーマットが不正の場合エラーメッセージを表示し、以降の処理は行わない
-        Call Get_ConstData      '固定領域設定シートから情報を読み込む
         Call Get_SectionData    'メモリマップ定義シート：セクション情報を読み込む
         Call Create_LD          'ldファイルを生成する
     Else
@@ -224,9 +209,7 @@ Public Sub Init_Data()
     Set Sheet_Setting = ActiveWorkbook.Worksheets(SHEETNAME_SETTING)
     Set Sheet_MemoryMap = ActiveWorkbook.Worksheets(SHEETNAME_MEMORYMAP)
     Set Sheet_Revision = ActiveWorkbook.Worksheets(SHEETNAME_RIVISION)
-    ' Set Sheet_Const = ActiveWorkbook.Worksheets(SHEETNAME_CONST)
-    ' Set Sheet_LDFileList = ActiveWorkbook.Worksheets(SHEETNAME_LDFILELIST)
-    ' Set Sheet_OutSetting = ActiveWorkbook.Worksheets(SHEETNAME_OUTSETTING)
+    Set Sheet_OutSetting = ActiveWorkbook.Worksheets(SHEETNAME_OUTSETTING)
     
     'メモリマップ設定シートの終端の行数を取得する
     Rowindex_EndRow = 1                                                            'メモリマップシートの最終行を初期化する'
@@ -244,34 +227,20 @@ Public Sub Init_Data()
     'また、今は暫定的に直値を入れているが、セルの探索などを使用して賢い方法をとってもいいと思う
     'ブラッシュアップ： 「メモリ名」というセルを探索しその行を検索するようにしたいが、ベストな案が思いつかないため決め打ちでセルの位置を取得する
 
-    '設定シート内の見出し行・列設定
-    Rowindex_TopLDFileID = 5                                '設定シートのldファイル入力エリアの行番号を設定する(5行)
-    RowIndex_TopConst = 11                                  '設定シートの固定領域入力エリアの行番号を設定する(11行)
-    RowIndex_TopDefSymbol = 17                              '設定シートのシンボル定義入力エリアの行番号を設定する(17行)
-
-    ColIndex_SettingLDFileID = COLUM_B                      '設定シートの固定領域「ID」列の列番号を設定する(B列)
-    ColIndex_ConstName = COLUM_C                            '設定シートの固定領域「Label」列の列番号を設定する(C列)
-    ColIndex_ConstData = COLUM_D                            '設定シートの固定領域「Size」列の列番号を設定する(D列)
-    ColIndex_DefSymbolID = COLUM_B                          '設定シートのシンボル定義「ID」列の列番号を設定する(B列)
-    ColIndex_DefSymbolBlock = COLUM_C                       '設定シートのシンボル定義「BLOCK」列の列番号を設定する(C列)
-    ColIndex_DefSymbolValue = COLUM_D                       '設定シートのシンボル定義「Setting Value」列の列番号を設定する(D列)
-
     'メモリマップ設計シート内の見出し行・列設定
     RowIndex_TopMemoryMap = 6                               'メモリマップ設計シートの入力エリアの行番号を設定する(6行)
                                                             
-    ColIndex_Area = COLUM_B                                 '「Area列」の列番号を設定する(B列)
-    ColIndex_MemoryLDFileID = COLUM_D                       '「ldファイルID」列の列番号を設定する(D列)
-    ColIndex_MemoryName = COLUM_E                           '「メモリ名」列の列番号を設定する(E列)
-    ColIndex_MemoryAddr_Start = COLUM_F                     '「開始アドレス」列の列番号を設定する(F列)
-    ColIndex_MemorySize = COLUM_G                           '「サイズ」列の列番号を設定する(G列)
-    ColIndex_MemoryCategory = COLUM_H                       '「メモリカテゴリ」列の列番号を設定する(H列)
-    ColIndex_SectionName = COLUM_I                          '「セクション名」列の列番号を設定する(I列)
-    ColIndex_SectionStartExpression = COLUM_J               '「開始アドレス（start_expression）」列の列番号を設定する(J列)
-    ColIndex_SectionAttributes = COLUM_K                    '「属性（attributes）」列の列番号を設定する(K列)
-    ColIndex_SectionContents = COLUM_L                      '「オブジェクト配置（contents）」列の列番号を設定する(L列)
-    ColIndex_SectionCategory = COLUM_M                      '「セクションカテゴリ」列の列番号を設定する(M列)
-    ColIndex_SectionExMemoryCalcSetting = COLUM_N           '「メモリ容量算出除外設定」列の列番号を設定する(N列)
-    ColIndex_Comment = COLUM_O                              '「コメント」列の列番号を設定する(O列)
+    ColIndex_Area = COLUM_A                                 '「Area列」の列番号を設定する(B列)
+    ColIndex_MemoryName = COLUM_B                           '「メモリ名」列の列番号を設定する(B列)
+    ColIndex_MemoryAddr_Start = COLUM_C                     '「開始アドレス」列の列番号を設定する(C列)
+    ColIndex_MemorySize = COLUM_D                           '「サイズ」列の列番号を設定する(D列)
+    ColIndex_MemoryCategory = COLUM_E                       '「メモリカテゴリ」列の列番号を設定する(E列)
+    ColIndex_SectionName = COLUM_F                          '「セクション名」列の列番号を設定する(F列)
+    ColIndex_SectionStartExpression = COLUM_G               '「開始アドレス（start_expression）」列の列番号を設定する(G列)
+    ColIndex_SectionAttributes = COLUM_H                    '「属性（attributes）」列の列番号を設定する(H列)
+    ColIndex_SectionContents = COLUM_I                      '「オブジェクト配置（contents）」列の列番号を設定する(I列)
+    ColIndex_SectionCategory = COLUM_J                      '「セクションカテゴリ」列の列番号を設定する(J列)
+    ColIndex_Comment = COLUM_K                              '「コメント」列の列番号を設定する(K列)
     
     '☆★☆☆★☆☆★☆☆★☆☆★☆☆★☆
     
@@ -288,26 +257,30 @@ Sub Get_LDName()
     Dim tmp_ldfile_num
     Dim tmp_RowIndex_LDFileID
     Dim i
-    
+    Dim find_Range As Range
+
     'Eraseでどこまで初期化してくれるのかわからなかったため、念のためで初期化している。
     '不要と分かれば削除してほしい
     For i = INDEX_START_ARRAY To 5
         LDList(i).LDFileName = ""
     Next
     
+    'Excel上、LDファイルIDは廃止するが、VBA処理内部では0固定とする
+    LDList(INDEX_START_ARRAY).LDFileID = 0
+    
     '内部変数の初期化
     tmp_ldfile_num = 0  'ldファイル数を0で初期化 Do Whileで先頭でインクリメントすることで正しく個数を認識させたい。そのため、0で初期化し、ループ文の先頭でインクリメントして1としたいため0で初期化する
         
     '行インデックスをInit_Dataで初期化した変数から取得する
-    tmp_RowIndex_LDFileID = Rowindex_TopLDFileID
+    Set find_Range = Sheet_Setting.Cells.Find(What:="[LDFILE_TOP]", LookIn:=xlValues, LookAt:=xlWhole)
+    tmp_RowIndex_LDFileID = find_Range.Row + 2
     
     Do Until InStr(Sheet_Setting.Cells(tmp_RowIndex_LDFileID, COLUM_B).Text, "[LDFILE_END]") > 0    'B列の最終行を示す「[LDFILE_END]」を見つけるまで、D列の各セルのデータを比較する(ループ)'
         'ldファイル数をインクリメントする このループ内に入るたびにインクリメントするため、インクリメントしすぎを防ぐために初期値は0にし、ここでインクリメントしている
         tmp_ldfile_num = tmp_ldfile_num + 1
         
         'ldファイル名とファイル名をエクセルから取得する
-        LDList(tmp_ldfile_num).LDFileID = Sheet_Setting.Cells(tmp_RowIndex_LDFileID, COLUM_B).Text
-        LDList(tmp_ldfile_num).LDFileName = Sheet_Setting.Cells(tmp_RowIndex_LDFileID, COLUM_C).Text
+        LDList(tmp_ldfile_num).LDFileName = Sheet_Setting.Cells(tmp_RowIndex_LDFileID, COLUM_B).Text
         
         '参照する行インデックスをインクリメントし、次の行を参照するようにする
         tmp_RowIndex_LDFileID = tmp_RowIndex_LDFileID + 1
@@ -362,7 +335,8 @@ Public Sub Get_MemoryName()
             tmp_Target_Area = Target_Area(tmp_RowIndex_MemoryName)
             
             '参照したメモリを配置するldファイルIDを取得する
-            tmp_TargetLDFileID = Target_LDFile(tmp_RowIndex_MemoryName)
+            'Excel上、LDファイルIDは廃止するが、VBA処理内部では0固定とする
+            tmp_TargetLDFileID = 0
             
             'Areaをコメントに記載する
             '現在参照しているメモリのAreaと前回値を比較し､異なる場合はAreaをldファイルにコメントとして出力し、異なる場合は何もしない
@@ -528,7 +502,6 @@ Public Sub Get_SectionData()
     Dim tmp_OutputSection As String
     Dim tmp_OutputElement As String
     Dim tmp_OutputSectionCategory As String
-    Dim tmp_OutputSectionExMemoryCalcSetting As String
     Dim tmp_OutputComment As String
     Dim tmp_Target_Area                                 'Area
     Dim tmp_Target_Area_old                             'Areaの前回値
@@ -556,14 +529,17 @@ Public Sub Get_SectionData()
         If Sheet_MemoryMap.Cells(tmp_RowIndex_SectionName, ColIndex_SectionName).Text <> "" Then
             'Area、、ldファイルID、メモリ名、セクション名、属性、セクション種別、メモリ容量算出除外設定、コメントを取得する
             tmp_Target_Area = Target_Area(tmp_RowIndex_SectionName)
-            SectionList(tmp_SectionIndex).LDFileID = Target_LDFile(tmp_RowIndex_SectionName)
+            '要素数の変更
+            ReDim Preserve SectionList(tmp_SectionIndex)
+            'Excel上、LDファイルIDは廃止するが、VBA処理内部では0固定とする
+            'SectionList(tmp_SectionIndex).LDFileID = Target_LDFile(tmp_RowIndex_SectionName)
+            SectionList(tmp_SectionIndex).LDFileID = 0
             SectionList(tmp_SectionIndex).Memory = Target_Memory(tmp_RowIndex_SectionName)
             SectionList(tmp_SectionIndex).Section_Name = Sheet_MemoryMap.Cells(tmp_RowIndex_SectionName, ColIndex_SectionName).Text
             SectionList(tmp_SectionIndex).Start_Expression = Sheet_MemoryMap.Cells(tmp_RowIndex_SectionName, ColIndex_SectionStartExpression).Text
             SectionList(tmp_SectionIndex).Attributes = Sheet_MemoryMap.Cells(tmp_RowIndex_SectionName, ColIndex_SectionAttributes).Text
             SectionList(tmp_SectionIndex).Contents = Sheet_MemoryMap.Cells(tmp_RowIndex_SectionName, ColIndex_SectionContents).Text
             SectionList(tmp_SectionIndex).Section_Category = Sheet_MemoryMap.Cells(tmp_RowIndex_SectionName, ColIndex_SectionCategory).Text
-            SectionList(tmp_SectionIndex).Section_ExMemoryCalcSetting = Sheet_MemoryMap.Cells(tmp_RowIndex_SectionName, ColIndex_SectionExMemoryCalcSetting).Text
             SectionList(tmp_SectionIndex).Comment = Sheet_MemoryMap.Cells(tmp_RowIndex_SectionName, ColIndex_Comment).Text
             
             'Areaをコメントに記載する
@@ -579,7 +555,18 @@ Public Sub Get_SectionData()
             
             tmp_OutputSection = SectionList(tmp_SectionIndex).Section_Name
             
-            tmp_OutputElement = SectionList(tmp_SectionIndex).Start_Expression & " " & SectionList(tmp_SectionIndex).Attributes & " : " & SectionList(tmp_SectionIndex).Contents
+            tmp_OutputElement = "" '初期化
+            If SectionList(tmp_SectionIndex).Start_Expression <> "" Then
+                tmp_OutputElement = SectionList(tmp_SectionIndex).Start_Expression & " "
+            End If
+            If SectionList(tmp_SectionIndex).Attributes <> "" Then
+                tmp_OutputElement = tmp_OutputElement & SectionList(tmp_SectionIndex).Attributes & " "
+            End If
+            If SectionList(tmp_SectionIndex).Contents <> "" Then
+               tmp_OutputElement = Adjust_Indents(tmp_OutputElement, INDENTS_ELEMENT32MEMORY) & " : " & SectionList(tmp_SectionIndex).Contents
+            Else
+               tmp_OutputElement = Adjust_Indents(tmp_OutputElement, INDENTS_ELEMENT32MEMORY) & " :"
+            End If
 
             'セクションカテゴリが入力されている場合、コメント修飾「 /*------ FUNCTYPE:xxxx ------*/」を追加する
             'セクションカテゴリが入力されていない場合はブランクで初期化する(出力部を条件分岐させたくないため)
@@ -588,8 +575,6 @@ Public Sub Get_SectionData()
             Else
                 tmp_OutputSectionCategory = ""
             End If
-
-            tmp_OutputSectionExMemoryCalcSetting = SectionList(tmp_SectionIndex).Section_ExMemoryCalcSetting
 
             'コメント部分が入力されている場合には、メモリブロック名とコメント出力部を整形する
             'メモリブロック名にはインデントを追加する。コメント部には「/*------  ------*/」を追加する
@@ -613,7 +598,7 @@ Public Sub Get_SectionData()
                 tmp_Breakline = vbCrLf
             End If
 
-            '出力データ(セクション)にArea、メモリブロック名、セクション名、属性、セクション種別、メモリ容量算出除外設定、コメントを整形して格納する
+            '出力データ(セクション)にArea、メモリブロック名、セクション名、属性、セクション種別、コメントを整形して格納する
             '現在参照しているメモリのldファイルIDを、ldファイルリストから探索し、ID毎に出力データを振り分ける
             For i = INDEX_START_ARRAY To NumberLD
                 If (LDList(i).LDFileID = SectionList(tmp_SectionIndex).LDFileID) Then
@@ -627,10 +612,10 @@ Public Sub Get_SectionData()
                         End If
                     Else                                                                                  'セクション名に#define又は#includeが含まれない場合
                         tmp_OutputString = AddIndentSpace & tmp_OutputSection
-                        If StrComp(tmp_OutputElement, "  ") <> 0 Then                                     '属性が空白以外の場合
+                        If StrComp(tmp_OutputElement, "") <> 0 Then                                       '属性が空白以外の場合
                             tmp_OutputString = tmp_OutputString & AddElementSpace(tmp_OutputString) & tmp_OutputElement
                         End If
-                        tmp_OutputString = tmp_OutputString & AddFixAddressSpace(tmp_OutputString) & " > " & tmp_OutputMemoryName
+                        tmp_OutputString = tmp_OutputString & AddFixAddressSpace(tmp_OutputString) & "> " & tmp_OutputMemoryName
                         If StrComp(tmp_OutputSectionCategory, "") <> 0 Then                               'セクション種別が空白以外の場合
                             tmp_OutputString = tmp_OutputString & AddCommentSpace(tmp_OutputString) & tmp_OutputSectionCategory
                         End If
@@ -816,24 +801,19 @@ Public Sub Create_LD()
             tmp_oLog.WriteLine (HEADER_COMENT_COPYRIGHT)                         ' コピーライト情報を出力する
             tmp_oLog.WriteLine (HEADER_COMENT_LINE)                              ' 分割線を出力する
             tmp_oLog.WriteLine (HEADER_COMENT_END)                               ' ヘッダコメント終了情報を出力する
-        
-            '各種セクションリストの出力
-            Call Output_DefaultSection(TABLE_DEFAULT_SECTION_CHECK_SETTING_TOP, TABLE_DEFAULT_SECTION_CHECK_SETTING_END, tmp_oLog)
-            Call Output_CompilerAutoGenerateSection(TABLE_COMPILER_AUTO_GENERATE_SECTION_TOP, TABLE_COMPILER_AUTO_GENERATE_SECTION_END, tmp_oLog)
-            Call Output_NoCalcSection(tmp_oLog)
 
             '計算式の出力
+            tmp_oLog.WriteLine (vbCrLf & "/* *** MEMORY CATEGORY TOP *** */")
             Call Output_CalculationFormula(TABLE_MEMORY_ROMRAM_CALC_FORMULA_TOP, TABLE_MEMORY_ROMRAM_CALC_FORMULA_END, tmp_oLog)
+            tmp_oLog.WriteLine ("/* *** MEMORY CATEGORY END *** */" & vbCrLf)
+            
+            tmp_oLog.WriteLine ("/* *** APPLICATION CATEGORY TOP *** */")
             Call Output_CalculationFormula(TABLE_MEMORY_FUNCTION_CALC_FORMULA_TOP, TABLE_MEMORY_FUNCTION_CALC_FORMULA_END, tmp_oLog)
+            tmp_oLog.WriteLine ("/* *** APPLICATION CATEGORY END *** */" & vbCrLf)
             
             'メモリ領域の出力
             tmp_oLog.WriteLine (HEADER_MEMORY)                                   ' "MEMORY {"を出力する
             tmp_oLog.WriteLine (LDList(i).Output_Memory)                         ' MEMORY領域に記載する要素を出力する
-            tmp_oLog.WriteLine (FOOTER_COMMON & vbCrLf)                          ' "}"を出力する
-             
-            '固定領域の出力
-            tmp_oLog.WriteLine (HEADER_DEFAULT)                                  ' "DEFAULTS{"を出力する
-            tmp_oLog.WriteLine (LDList(i).Output_Const)                          ' DEFAULTS部分に記載する要素を出力する
             tmp_oLog.WriteLine (FOOTER_COMMON & vbCrLf)                          ' "}"を出力する
             
             'セクション領域の出力
@@ -887,7 +867,7 @@ Public Sub Output_History(fileID As String, tmp_oLog)
     Dim find_Range As Range
     Dim num
     
-    Set find_Range = Sheet_Revision.Columns(COLUM_D).Find(What:=TABLE_FILEID_TITLE, LookIn:=xlValues, LookAt:=xlWhole)
+    Set find_Range = Sheet_Revision.Columns(COLUM_D).Find(What:="日付", LookIn:=xlValues, LookAt:=xlWhole)
     
     If Not find_Range Is Nothing Then
         Call SetDefault_History_List(fileID, find_Range.Row)  '改訂履歴のリストを初期化する
@@ -924,6 +904,11 @@ Public Sub SetDefault_History_List(fileID As String, rowIndex As Integer)
             cell_fileID = Sheet_Revision.Cells(rowIndex, COLUM_D).Text                      '結合セルでない場合はCellsからファイル名を取得する
         End If
           
+        'Excel上、LDファイルIDは廃止するが、VBA処理内部では0固定とする
+        If cell_fileID <> "" Then
+            cell_fileID = 0
+        End If
+          
         If fileID = cell_fileID Then                                                        '引数のファイル名と比較対象のセルのファイル名が一致する場合
             macth_Conter = macth_Conter + 1                                                 'カウンタをインクリメントする
         End If
@@ -956,10 +941,15 @@ Public Sub SetValue_History_List(fileID As String, rowIndex As Integer)
             cell_fileID = Sheet_Revision.Cells(rowIndex, COLUM_D).Text                      '結合セルでない場合はCellsからファイル名を取得する
         End If
     
+        'Excel上、LDファイルIDは廃止するが、VBA処理内部では0固定とする
+        If cell_fileID <> "" Then
+            cell_fileID = 0
+        End If
+        
         If fileID = cell_fileID Then                                                        '引数のファイル名と比較対象のセルのファイル名が一致する場合
             macth_Conter = macth_Conter + 1                                                 'カウンタをインクリメントする
             With Sheet_Revision                                                             '改訂履歴の表から必要なデータを取得する
-                history_value = .Cells(rowIndex, COLUM_E) & " " & .Cells(rowIndex, COLUM_F) & " " & .Cells(rowIndex, COLUM_G)
+                history_value = .Cells(rowIndex, COLUM_D) & " " & .Cells(rowIndex, COLUM_E) & " " & .Cells(rowIndex, COLUM_F)
             End With
             
             If macth_Conter = 1 Then                                                        '対象ファイルの改訂履歴が複数ある場合最初のHistory行のみ行タイトルを設定する
@@ -999,15 +989,15 @@ Public Sub Output_OutSetting_Manager(fileID As String, tmp_oLog)
     Dim rowIndex As Integer                                                                           '読み込み行位置
     Dim fileID_Range As Integer                                                                       '読み込んだldファイルの範囲
     
-    Set find_Range = Sheet_Setting.Columns(COLUM_B).Find(What:=TABLE_DEFINE_SYMBOL, LookIn:=xlValues, LookAt:=xlWhole)
-
+    Set find_Range = Sheet_OutSetting.Cells.Find(What:="[DEFINE_SYMBOL_TOP]", LookIn:=xlValues, LookAt:=xlWhole)
+    
     If Not find_Range Is Nothing Then                                                                 'B列からldファイルIDタイトル位置を検索し見つかる場合のみ処理を続行する
         rowIndex = find_Range.Row + 2                                                                 '[DEFINE_SYMBOL_TOP]の2行下から読み込みを行う
     
-        Do Until InStr(Sheet_Setting.Cells(rowIndex, COLUM_B).Text, "[DEFINE_SYMBOL_END]") > 0        'B列の最終行を示す[DEFINE_SYMBOL_END]を見つけるまで、B列の各セルのデータを比較する(ループ)
-            If (fileID = Sheet_Setting.Cells(rowIndex, COLUM_B).Text) Then                            '第1引数で渡されたldファイルIDと同じldファイルIDの場合、行データの読み込みを行う
-               If Sheet_Setting.Cells(rowIndex, COLUM_B).MergeCells Then                              '読み込み対象のldファイルIDの範囲を取得する
-                    fileID_Range = Sheet_Setting.Cells(rowIndex, COLUM_B).MergeArea.Rows.count
+        Do Until InStr(Sheet_OutSetting.Cells(rowIndex, COLUM_B).Text, "[DEFINE_SYMBOL_END]") > 0        'B列の最終行を示す[DEFINE_SYMBOL_END]を見つけるまで、B列の各セルのデータを比較する(ループ)
+            If ("" <> Sheet_OutSetting.Cells(rowIndex, COLUM_B).Text) Then                            '第1引数で渡されたldファイルIDと同じldファイルIDの場合、行データの読み込みを行う
+               If Sheet_OutSetting.Cells(rowIndex, COLUM_B).MergeCells Then                              '読み込み対象のldファイルIDの範囲を取得する
+                    fileID_Range = Sheet_OutSetting.Cells(rowIndex, COLUM_B).MergeArea.Rows.count
                Else
                     fileID_Range = 1
                End If
@@ -1033,10 +1023,10 @@ Public Sub Output_Area(rowIndex As Integer, fileID_Range As Integer, tmp_oLog)
     lastRow = rowIndex + fileID_Range                                   '第1引数で渡された行位置から第2引数で渡された範囲を加算した位置を読み込み終了行とする
 
     Do Until rowIndex >= lastRow                                        '読み込み行位置が読み込み終了行以上になるまでBLOCK名を読み込み対象のファイルに出力する
-        area = AREA_TOP & Sheet_Setting.Cells(rowIndex, COLUM_C).Text & AREA_END
+        area = AREA_TOP & Sheet_OutSetting.Cells(rowIndex, COLUM_B).Text & AREA_END
         tmp_oLog.WriteLine (area)
-        If Sheet_Setting.Cells(rowIndex, COLUM_C).MergeCells Then       'BLOCK名の範囲を取得する
-             area_Range = Sheet_Setting.Cells(rowIndex, COLUM_C).MergeArea.Rows.count
+        If Sheet_OutSetting.Cells(rowIndex, COLUM_B).MergeCells Then       'BLOCK名の範囲を取得する
+             area_Range = Sheet_OutSetting.Cells(rowIndex, COLUM_B).MergeArea.Rows.count
         Else
              area_Range = 1
         End If
@@ -1057,7 +1047,11 @@ Public Sub Output_SettingValue(rowIndex As Integer, area_Range, tmp_oLog)
     lastRow = rowIndex + area_Range             '第1引数で渡された行位置から第2引数で渡された範囲を加算した位置を読み込み終了行とする
     
     Do Until rowIndex >= lastRow                '読み込み行位置が読み込み終了行以上になるまで設定値の読み込み対象のファイルに出力する
-        area = SECTION_SPACE & Sheet_Setting.Cells(rowIndex, COLUM_D).Text
+        If Sheet_OutSetting.Cells(rowIndex, COLUM_D).Text <> "" Then
+            area = SECTION_SPACE & Adjust_Indents(Sheet_OutSetting.Cells(rowIndex, COLUM_C).Text, 80) & Sheet_OutSetting.Cells(rowIndex, COLUM_D).Text
+        Else
+            area = SECTION_SPACE & Sheet_OutSetting.Cells(rowIndex, COLUM_C).Text
+        End If
         tmp_oLog.WriteLine (area)
         rowIndex = rowIndex + 1
     Loop
@@ -1075,296 +1069,6 @@ Public Sub Show_Error_Messsage(message As String)
     'エラーメッセージを表示する
     MsgBox message, vbOKOnly, ERROR_TITLE
     
-End Sub
-
-'/****************************************************************************************************
-'/* 概要   | シートアクティブイベント
-'/*        | メモリマップ設計シートが開かれたとき、
-'/*        | 選択中のアドレス空間リストのアイテムを記憶するために使用
-'/****************************************************************************************************
-Private Sub Worksheet_Activate()
-    'シートオブジェクトを別のオブジェクトに格納する
-    'ワークシート名をいちいち打たずに(開発時に)見やすくするために実施
-    Set Sheet_MemoryMap = ActiveWorkbook.Worksheets(SHEETNAME_MEMORYMAP)
-    Before_Item_Name = Sheet_MemoryMap.Cells(ROW_LISTBOX_LOCATION, COLUMN_LISTBOX_LOCATION).Text
-    
-End Sub
-
-'/****************************************************************************************************
-'/* 概要   | シート内容変更イベント
-'/*        | セル埋め込みのアドレス空間リスト変更イベントとし
-'/*        | リスト内容が変化した場合のみ処理を行う。
-'/****************************************************************************************************
-Private Sub Worksheet_Change(ByVal Target As Range)
-    Dim item_Name As String
-    
-    'シートオブジェクトを別のオブジェクトに格納する
-    'ワークシート名をいちいち打たずに(開発時に)見やすくするために実施
-    Set Sheet_MemoryMap = ActiveWorkbook.Worksheets(SHEETNAME_MEMORYMAP)
-    Set Sheet_MemoryPlace = ActiveWorkbook.Worksheets(SHEETNAME_MEMORYPLACEMENT)
-    Set Sheet_Setting = ActiveWorkbook.Worksheets(SHEETNAME_SETTING)
-    
-    '前回のアイテム名と比較するために、現在表示中のリスト名を取得する
-    item_Name = Sheet_MemoryMap.Cells(ROW_LISTBOX_LOCATION, COLUMN_LISTBOX_LOCATION).Text
-    
-    'メモリマップ定義シートのリストのアイテムが変更された場合のみ、処理を続行する
-    If (ActiveCell = Sheet_MemoryMap.Cells(ROW_LISTBOX_LOCATION, COLUMN_LISTBOX_LOCATION)) And (item_Name <> Before_Item_Name) Then
-        'メモリマップ定義シートの表更新の際、シートの値の変更イベントが発生するため
-        '一度イベントを無効にする
-        Application.EnableEvents = False
-        
-        '確認メッセージを表示し、「Yes」を押された場合のみ、表の更新を行う。
-        'それ以外のボタンが押された場合は、表の更新を行わずイベントをキャンセルし
-        'アドレス空間リストの選択状態を前回の状態に戻す
-        If (vbYes = MsgBox(QUESTION_DELETE_TABLE, vbYesNo + vbQuestion, QUESTION_TITLE)) Then
-            'メモリマップ定義シートの表の更新を行う
-            Update_MamoryMap_Table_Maneger (item_Name)
-            'メモリ配置シートの更新を行う
-            Call Update_MamoryPlacement_Sheet_Maneger
-            '前回のリストアイテムを更新する
-            Before_Item_Name = item_Name
-        Else
-            'シート内容変更イベントをキャンセルする
-            Application.Undo
-        End If
-        
-        '無効になっているイベントを有効にする
-        Application.EnableEvents = True
-    End If
-End Sub
-
-'/****************************************************************************************************
-'/* 概要   | 編集中のメモリマップ定義シートの表の
-'/*        | 更新を行うための関数を操作する関数
-'/****************************************************************************************************
-Public Sub Update_MamoryMap_Table_Maneger(item_Name As String)
-    Dim rowIndex_LastRow As Integer                                 '最終行の位置
-    
-    '対象アイテムのアドレス空間シートが存在するかチェックを行い
-    '存在しない場合、処理を中断しエラーメッセージを表示表示する
-    If (Exists_Worksheet(item_Name) = True) Then
-        Set Sheet_Addr_Spese = ActiveWorkbook.Worksheets(item_Name) '対象のアドレス空間シートを取得する
-        
-        rowIndex_LastRow = Get_LastRow(Sheet_MemoryMap)             'メモリマップ定義シートの最終行を取得する
-        Delete_MemoryMap_Table (rowIndex_LastRow)                   'メモリマップ定義シートの表を削除する
-        
-        rowIndex_LastRow = Get_LastRow(Sheet_Addr_Spese)            'アドレス空間シートの最終行を取得する
-        Update_MemoryMap_Table (rowIndex_LastRow)                   'メモリマップ定義シートの表を更新する
-    Else
-        '処理なし（エラー未対応）
-    End If
-End Sub
-
-'/****************************************************************************************************
-'/* 概要   | メモリ配置シートの更新を行うための
-'/*        | 関数を操作する関数
-'/****************************************************************************************************
-Public Sub Update_MamoryPlacement_Sheet_Maneger()
-    Dim rowIndex_LastRow As Integer                                         '最終行の位置
-    
-    Sheet_MemoryPlace.Cells(ROW_1, COLUM_C).Value = Sheet_Addr_Spese.name   '表示するアイテム名を取得したアドレス空間シート名に変更する
-    
-    rowIndex_LastRow = Get_LastRow(Sheet_MemoryPlace)                       'メモリ配置シートの最終行を取得する
-    Delete_MemoryPlacement_Table (rowIndex_LastRow)                         'メモリ配置シートの表を削除する
-    
-    rowIndex_LastRow = Get_LastRow(Sheet_Addr_Spese)                        'アドレス空間シートの最終行を取得する
-    Copy_Address (rowIndex_LastRow)                                         'アドレス空間シートのアドレス列をメモリ配置シートの表にコピーする
-    
-    rowIndex_LastRow = rowIndex_LastRow - 3                                 '取得したアドレス空間シートの最終行は最終行を表す"■"の説明文まで含めるため
-                                                                            '最終行の設定を表の最終行までに変更する
-    Update_MemoryPlacement_Sheet (rowIndex_LastRow)                         'メモリ配置シートの更新を行う
-End Sub
-
-'/****************************************************************************************************
-'/* 概要   | 作業ブックに対し、引数で渡されたシート名が
-'/*        | 存在するかチェックを行う。存在しない場合Falseを返す
-'/****************************************************************************************************
-Public Function Exists_Worksheet(sheet_Name As String) As Boolean
-    Dim Worksheet As Worksheet                       'ブックのシートを格納するオブジェクト
-    
-    For Each Worksheet In ActiveWorkbook.Worksheets  'ブックに存在するシートすべての名前と
-        If Worksheet.name = sheet_Name Then          '引数で渡されたシート名を比較し、存在する場合、繰り返し処理を中断する
-            ' 存在する
-            Exists_Worksheet = True
-            Exit Function
-        End If
-    Next
-    
-    ' 存在しない
-    Exists_Worksheet = False
-End Function
-
-'/****************************************************************************************************
-'/* 概要   | 編集中のメモリマップ定義シートの表の
-'/*        | 削除を行う
-'/****************************************************************************************************
-Public Sub Delete_MemoryMap_Table(rowIndex_LastRow As Integer)
-    '見出し位置と最終行が設定済みの場合
-    If (0 < RowIndex_TopMemoryMap) And (RowIndex_TopMemoryMap < rowIndex_LastRow) Then
-        '設定した範囲のメモリマップ定義シートの行を削除する
-        Sheet_MemoryMap.Rows(RowIndex_TopMemoryMap & ":" & rowIndex_LastRow).Delete
-    End If
-End Sub
-
-'/****************************************************************************************************
-'/* 概要   | メモリマップ定義シートの表に
-'/*        | アドレス空間シートの表をコピーする
-'/****************************************************************************************************
-Public Sub Update_MemoryMap_Table(rowIndex_LastRow As Integer)
-    Dim copy_Range As String                                                            'コピーする範囲を指定する文字列を格納する
-    
-    If (0 < RowIndex_TopMemoryMap) And (RowIndex_TopMemoryMap < rowIndex_LastRow) Then  '見出し位置と最終行が設定済みの場合
-        copy_Range = RowIndex_TopMemoryMap & ":" & rowIndex_LastRow                     'コピーする範囲を取得する
-        Sheet_Addr_Spese.Rows(copy_Range).Copy                                          'アドレス空間シートから表をコピーする
-        Sheet_MemoryMap.Rows(copy_Range).PasteSpecial (xlPasteAll)                      'メモリマップ定義シートにコピーした表をペーストする
-        Application.CutCopyMode = False                                                 'Excelがコピーモードとなるためコピーモードを解除する
-    End If
-End Sub
-
-'/****************************************************************************************************
-'/* 概要   | 引数で渡されたシートの最終行を取得し、戻り値で返す
-'/*        | この関数では「■」の説明文も含める
-'/****************************************************************************************************
-Public Function Get_LastRow(sheet As Worksheet) As Integer
-    'メモリマップ定義シート内の見出し行設定
-    RowIndex_TopMemoryMap = 7                                               'メモリマップ定義シートの入力エリアの行番号を設定する(7行)
-    
-    'メモリマップ定義シートの終端の行数を取得する
-    Get_LastRow = 1                                                         'メモリマップ定義シートの最終行を初期化する'
-    Do Until InStr(sheet.Cells(Get_LastRow, COLUM_A).Text, "■") > 0         'A列の最終行を示す「■」を見つけるまで、A列の各セルのデータを比較している(ループ)'
-        Get_LastRow = Get_LastRow + 1                                       'ループの値には内部変数を使って、最終行が決まったらデータ更新したいが、'
-    Loop                                                                    'CPUのメモリを節約するために直接データを更新している'
-    
-    Get_LastRow = Get_LastRow + LASTROW_DESCRIPTION                         'シートに上記処理で判定する最終行の文字の説明があるため、その位置を含めるようにする
-End Function
-
-'/****************************************************************************************************
-'/* 概要   | アドレス空間シートのアドレス・Area列を
-'/*        | メモリ配置シートの表にコピーする
-'/****************************************************************************************************
-Public Sub Copy_Address(rowIndex_LastRow As Integer)
-    Dim copy_Range As String                                                            'コピーする範囲を指定する文字列を格納する
-    
-    If (0 < RowIndex_TopMemoryMap) And (RowIndex_TopMemoryMap < rowIndex_LastRow) Then  '見出し位置と最終行が設定済みの場合
-        copy_Range = "A" & RowIndex_TopMemoryMap & ":" & "B" & rowIndex_LastRow         'コピーする範囲を取得する
-        Sheet_Addr_Spese.Range(copy_Range).Copy                                         'アドレス空間シートから表をコピーする
-        Sheet_MemoryPlace.Range(copy_Range).PasteSpecial (xlPasteAll)                   'メモリマップ定義シートにコピーした表をペーストする
-        Application.CutCopyMode = False                                                 'Excelがコピーモードとなるためコピーモードを解除する
-    End If
-End Sub
-
-'/****************************************************************************************************
-'/* 概要   | メモリ配置シートの更新を行う
-'/****************************************************************************************************
-Public Sub Update_MemoryPlacement_Sheet(rowIndex_LastRow As Integer)
-    Dim find_Range As Range                                                                                 '設定シートのldファイルIDセル位置を格納する変数
-    Dim lastRow As Integer                                                                                  '設定シートの表の最終行を格納する変数
-    Dim lastCol As Integer                                                                                  'メモリ配置シートの表の最終列位置を格納する変数
-    Dim index_Counter As Integer                                                                            '繰り返しの回数を格納するカウンタ(メモリ配置シートの表の列数を増やすために使用)
-    
-    Set find_Range = Sheet_Setting.Columns(COLUM_D).Find(What:="ID", LookIn:=xlValues, LookAt:=xlWhole)  'ldファイルIDセル位置を見つけ出し
-                                                                                                            '見つけたセル位置を取得する
-    If Not find_Range Is Nothing Then                                                                       '見つからない場合は更新しない
-        index_Counter = 0                                                                                   'カウンタの初期値を0にする
-        lastRow = find_Range.Row + 1                                                                        '最終行の設定をIDセルの次の位置に変更する
-        
-        Do Until InStr(Sheet_Setting.Cells(lastRow, COLUM_D).Text, "■") > 0                              'D列の最終行を示す「■」を見つけるまで、D列の各セルのデータを比較している(ループ)'
-            Call Add_FDFile_Table(index_Counter, rowIndex_LastRow)                                          'メモリ配置シートの表の列数を増やす
-            Call Fix_ColumnName(index_Counter, Sheet_Setting.Cells(lastRow, COLUM_D).Text)               '追加した列タイトルを修正する
-            index_Counter = index_Counter + 1                                                               'カウンタをインクリメントする
-            lastRow = lastRow + 1                                                                           '最終行の設定をインクリメント
-        Loop
-        
-        lastCol = index_Counter + COLUM_C - 1                                                               '表の最終列を設定する。起点のC列からカウンタの数まで列位置を移動する
-                                                                                                            'カウンタのインクリメントの回数が追加した列数+1となるため-1を行う
-        Fix_Table_LDFile (lastCol)                                                                          '列操作により表のldファイルテーブルが中途半端な状態になるため修正する
-    End If
-End Sub
-
-'/****************************************************************************************************
-'/* 概要   | メモリ配置シートの表の列数を増やす
-'/****************************************************************************************************
-Public Sub Add_FDFile_Table(colIndex As Integer, rowIndex_LastRow As Integer)
-    Dim copyCol As Range                                                            'コピー元の列範囲を格納する変数
-    Dim pasteCol As Range                                                           'ペーストする列範囲を格納する変数
-    Dim pasteCol_Location As Integer                                                'ペーストする列位置を格納する変数
-    Dim row_Range As String                                                         '行の範囲を指定する変数
-    
-    pasteCol_Location = COLUM_C + colIndex                                          'ペーストする列位置を取得する
-    
-    row_Range = RowIndex_TopMemoryMap & ":" & rowIndex_LastRow                      '行の範囲を設定する
-    
-    Set copyCol = Sheet_MemoryPlace.Columns(COLUM_B).Rows(row_Range)                'コピー元はArea名を指定する(セルに設定している背景色を反映させるため)
-    Set pasteCol = Sheet_MemoryPlace.Columns(pasteCol_Location).Rows(row_Range)     'ペーストする範囲を設定する
-    copyCol.Copy                                                                    'コピー元をコピーする
-    pasteCol.PasteSpecial (xlPasteAll)                                              'ペースト先にペーストする
-    
-    Application.CutCopyMode = False                                                 'コピーモードとなるため解除する
-    
-    pasteCol.ClearContents                                                          'コピー元がArea名列のため、セルの記載内容をクリアする
-    pasteCol.Borders(xlInsideHorizontal).LineStyle = xlContinuous                   'ペーストしたセルに罫線を設定する
-    
-    Sheet_MemoryPlace.Columns(pasteCol_Location).ColumnWidth = Sheet_MemoryPlace.Columns(COLUM_C).ColumnWidth   '列幅を列起点のC列の幅に合わせる
-End Sub
-
-'/****************************************************************************************************
-'/* 概要   | メモリ配置シートの表の列タイトルを修正する
-'/****************************************************************************************************
-Public Sub Fix_ColumnName(colIndex As Integer, FDFile_Name As String)
-    Dim copyCol As Range                                                        'コピー元の列範囲を格納する変数
-    Dim pasteCol As Range                                                       'ペーストする列範囲を格納する変数
-    Dim pasteCol_Location As Integer                                            'ペーストする列位置を格納する変数
-    Dim row_Range As String                                                     '行の範囲を指定する変数
-    
-    pasteCol_Location = COLUM_C + colIndex                                      'ペーストする列位置を取得する
-    row_Range = ROW_6                                                           '行の範囲を設定する
-    
-    Set copyCol = Sheet_MemoryPlace.Columns(COLUM_C).Rows(row_Range)            'コピー元はC列を指定する(セルに設定している背景色を反映させるため)
-    Set pasteCol = Sheet_MemoryPlace.Columns(pasteCol_Location).Rows(row_Range) 'ペーストする範囲を設定する
-    copyCol.Copy                                                                'コピー元をコピーする
-    pasteCol.PasteSpecial (xlPasteAll)                                          'ペースト先にペーストする
-    
-    Application.CutCopyMode = False                                             'コピーモードとなるため解除する
-    
-    pasteCol.ClearContents                                                      'コピー元がC列のため、セルの記載内容をクリアする
-    
-    Sheet_MemoryPlace.Cells(ROW_6, pasteCol_Location).Value = FDFile_Name       '表の列名を設定する
-End Sub
-
-'/****************************************************************************************************
-'/* 概要   | メモリ配置シートの表の列タイトルを修正する
-'/****************************************************************************************************
-Public Sub Fix_Table_LDFile(colIndex As Integer)
-    Dim startCell As Range                                          '結合範囲の先頭セルを格納する変数
-    Dim endCell As Range                                            '結合範囲の最終セルを格納する変数
-    Dim merge_Range As Range                                        '結合するセルの範囲を格納する変数
-    
-    Set startCell = Sheet_MemoryPlace.Cells(ROW_4, COLUM_C)         '先頭セルを取得する
-    Set endCell = Sheet_MemoryPlace.Cells(ROW_5, colIndex)          '最終セルを取得する
-    Set merge_Range = Sheet_MemoryPlace.Range(startCell, endCell)   '結合範囲を設定する
-    
-    startCell.UnMerge                                               '先頭セルが結合セルである場合があるため、結合を解除しておく
-    
-    merge_Range.Merge                                               '設定した範囲のセルを結合する
-    merge_Range.Borders.LineStyle = xlContinuous                    '結合セルに罫線を設定する
-End Sub
-
-'/****************************************************************************************************
-'/* 概要   | メモリ配置シートの表の
-'/*        | 削除を行う
-'/****************************************************************************************************
-Public Sub Delete_MemoryPlacement_Table(rowIndex_LastRow As Integer)
-    Dim delete_Col As String
-    
-    '見出し位置と最終行が設定済みの場合
-    If (0 < RowIndex_TopMemoryMap) And (RowIndex_TopMemoryMap < rowIndex_LastRow) Then
-        '設定した範囲のメモリマップ定義シートの行を削除する
-        Sheet_MemoryPlace.Rows(RowIndex_TopMemoryMap & ":" & rowIndex_LastRow).Delete
-    End If
-    
-    '更新する際、列の項目数が異なることがあるため、最初の列以外を削除する
-    '(現状はZ列まで考慮している、それ以上の項目数になる場合は定数を修正する)
-    Sheet_MemoryPlace.Columns(COLUMN_DELETE_RANGE).Delete
 End Sub
 
 '/****************************************************************************************************
@@ -1413,105 +1117,6 @@ Function Convert_Memory_Size(inputString) As String
 End Function
 
 '/****************************************************************************************************
-'/* 概要   | デフォルトセクションのリストを作成する
-'/****************************************************************************************************
-Public Sub Output_DefaultSection(keyItemTop As String, keyItemEnd As String, tmp_oLog)
-    Dim i As Integer
-    Dim cntRowIndex As Integer
-    Dim find_Range As Range
-    Dim tmpSectionInfo As String
-
-    Set find_Range = Sheet_Setting.Columns(COLUM_B).Find(What:=keyItemTop, LookIn:=xlValues, LookAt:=xlWhole)
-    
-    If Not find_Range Is Nothing Then
-        '初期化
-        cntRowIndex = find_Range.Row + 1
-
-        Do Until InStr(Sheet_Setting.Cells(cntRowIndex, find_Range.Column).Text, keyItemEnd) > 0
-            ' ONの場合、デフォルトセクションを設定する
-            If Sheet_Setting.Cells(cntRowIndex, find_Range.Column).Text = "ON" Then
-                For i = LBound(SectionList) To UBound(SectionList)
-                    If SectionList(i).Section_Category = "DEFSEC" Then
-                        If tmpSectionInfo = "" Then
-                            tmpSectionInfo = SectionList(i).Section_Name
-                        Else
-                            tmpSectionInfo = tmpSectionInfo & "," & SectionList(i).Section_Name
-                        End If
-                    End If
-                Next i
-                tmpSectionInfo = "/* Prohibited_Section = " & tmpSectionInfo & " */"
-            ' OFFの場合、デフォルトセクションを設定しない
-            ElseIf Sheet_Setting.Cells(cntRowIndex, find_Range.Column).Text = "OFF" Then
-                tmpSectionInfo = "/* Prohibited_Section = " & tmpSectionInfo & " */"
-            End If
-            
-            cntRowIndex = cntRowIndex + 1
-        Loop
-    
-        'ldファイルに出力
-        tmp_oLog.WriteLine (vbCrLf & tmpSectionInfo)
-    End If
-End Sub
-
-'/****************************************************************************************************
-'/* 概要   | コンパイラ自動作成セクションのリストを作成する
-'/****************************************************************************************************
-Public Sub Output_CompilerAutoGenerateSection(keyItemTop As String, keyItemEnd As String, tmp_oLog)
-    Dim i As Integer
-    Dim cntRowIndex As Integer
-    Dim find_Range As Range
-    Dim tmpSectionInfo As String
-    
-    Set find_Range = Sheet_Setting.Range("A1:Z500").Find(What:=keyItemTop, LookIn:=xlValues, LookAt:=xlWhole)
-    
-    If Not find_Range Is Nothing Then
-        '初期化
-        cntRowIndex = find_Range.Row + 1
-
-        '対象のセクションを抽出する
-        Do Until InStr(Sheet_Setting.Cells(cntRowIndex, find_Range.Column).Text, keyItemEnd) > 0
-            If tmpSectionInfo = "" Then
-                tmpSectionInfo = Sheet_Setting.Cells(cntRowIndex, find_Range.Column).Text
-            Else
-                tmpSectionInfo = tmpSectionInfo & "," & Sheet_Setting.Cells(cntRowIndex, find_Range.Column).Text
-            End If
-            cntRowIndex = cntRowIndex + 1
-        Loop
-
-        tmpSectionInfo = "/* Elim_From_Rst = " & tmpSectionInfo & " */"
-
-        'ldファイルに出力
-        tmp_oLog.WriteLine (tmpSectionInfo)
-    End If
-End Sub
-
-'/****************************************************************************************************
-'/* 概要   | 計算対象外セクションのリストを作成する
-'/****************************************************************************************************
-Public Sub Output_NoCalcSection(tmp_oLog)
-    Dim i As Integer
-    Dim cntRowIndex As Integer
-    Dim find_Range As Range
-    Dim tmpSectionInfo As String
-
-    tmpSectionInfo = ""
-    For i = LBound(SectionList) To UBound(SectionList)
-        If SectionList(i).Section_ExMemoryCalcSetting <> "" Then
-            If tmpSectionInfo = "" Then
-                tmpSectionInfo = SectionList(i).Section_Name
-            Else
-                tmpSectionInfo = tmpSectionInfo & "," & SectionList(i).Section_Name
-            End If
-        End If
-    Next i
-
-    tmpSectionInfo = "/* No_Calc_Section = " & tmpSectionInfo & " */" & vbCrLf
-
-    'ldファイルに出力
-    tmp_oLog.WriteLine (tmpSectionInfo)
-End Sub
-
-'/****************************************************************************************************
 '/* 概要   | メモリ計算式を作成する
 '/****************************************************************************************************
 Public Sub Output_CalculationFormula(keyItemTop As String, keyItemEnd As String, tmp_oLog)
@@ -1525,11 +1130,11 @@ Public Sub Output_CalculationFormula(keyItemTop As String, keyItemEnd As String,
     Dim tmpCalcBlockName As String
     Dim tmpCalcList() As String
     
-    Set find_Range = Sheet_Setting.Range("A1:Z500").Find(What:=keyItemTop, LookIn:=xlValues, LookAt:=xlWhole)
+    Set find_Range = Sheet_Setting.Cells.Find(What:=keyItemTop, LookIn:=xlValues, LookAt:=xlWhole)
     
     If Not find_Range Is Nothing Then
         '初期化
-        cntRowIndex = find_Range.Row + 1
+        cntRowIndex = find_Range.Row + 2
         cntArrayIndex = 0
 
         '配列の要素数を求める
@@ -1539,7 +1144,7 @@ Public Sub Output_CalculationFormula(keyItemTop As String, keyItemEnd As String,
 
         '配列の要素数確定
         ReDim tmpCalcList(cntRowIndex - find_Range.Row - 1)
-        cntRowIndex = find_Range.Row + 1
+        cntRowIndex = find_Range.Row + 2
 
         Do Until InStr(Sheet_Setting.Cells(cntRowIndex, find_Range.Column).Text, keyItemEnd) > 0
             cntColumnIndex = find_Range.Column
@@ -1565,8 +1170,10 @@ Public Sub Output_CalculationFormula(keyItemTop As String, keyItemEnd As String,
             Else
                 '配列に計算式を格納
                 If tmpCalcBlockName = "" Then
-                    tmpCalculation_Formula = Adjust_Indents(tmpCalculation_Formula, INDENTS_FORMULA2FULL)
-                    tmpCalcList(cntArrayIndex) = "/* " & tmpCalculation_Formula & " */"
+                    If tmpCalculation_Formula <> "NA" Then
+                        tmpCalculation_Formula = Adjust_Indents(tmpCalculation_Formula, INDENTS_FORMULA2FULL)
+                        tmpCalcList(cntArrayIndex) = "/* " & tmpCalculation_Formula & " */"
+                    End If
                 Else
                     tmpCalculation_Formula = Adjust_Indents(tmpCalculation_Formula, INDENTS_FORMULA2LEFT)
                     tmpCalcBlockName = Adjust_Indents(tmpCalcBlockName, INDENTS_FORMULA2RIGHT)
@@ -1580,8 +1187,9 @@ Public Sub Output_CalculationFormula(keyItemTop As String, keyItemEnd As String,
         
         'ldファイルに出力
         For i = LBound(tmpCalcList) To UBound(tmpCalcList)
-            tmp_oLog.WriteLine (tmpCalcList(i))
+            If "" <> tmpCalcList(i) Then
+                tmp_oLog.WriteLine (tmpCalcList(i))
+            End If
         Next i
     End If
 End Sub
-
